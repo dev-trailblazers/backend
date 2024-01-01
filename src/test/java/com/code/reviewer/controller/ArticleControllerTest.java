@@ -48,4 +48,21 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @DisplayName("[POST] 게시글 생성 API - 실패(제목 누락)")
+    @Test
+    void createArticle_TitleIsNull_400() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/article")
+                        .content(mapper.writeValueAsString(ArticleDto.of(null, "내용", "#해시태그")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("[POST] 게시글 생성 API - 실패(내용 누락)")
+    @Test
+    void createArticle_ContentIsNull_400() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/article")
+                        .content(mapper.writeValueAsString(ArticleDto.of("제목", null, "#해시태그")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
