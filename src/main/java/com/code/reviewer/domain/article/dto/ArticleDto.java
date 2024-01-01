@@ -1,13 +1,15 @@
 package com.code.reviewer.domain.article.dto;
 
 import com.code.reviewer.domain.article.Article;
+import com.code.reviewer.domain.validation.HashTags;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record ArticleDto(
         Long id,
-        String title,
-        String content,
-        String hashTags,
+        @NotNull(message = "제목은 필수입니다.") String title,
+        @NotNull(message = "내용은 필수입니다.") String content,
+        @HashTags(message = "해시 태그는 최대 6개 까지만 입력할 수 있습니다.") String hashTags,
 
         LocalDateTime createdAt,
         LocalDateTime modifiedAt

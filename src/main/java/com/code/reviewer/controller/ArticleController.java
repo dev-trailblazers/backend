@@ -2,6 +2,7 @@ package com.code.reviewer.controller;
 
 import com.code.reviewer.domain.article.dto.ArticleDto;
 import com.code.reviewer.service.ArticleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping
-    public ResponseEntity<Void> saveArticle(@RequestBody ArticleDto articleDto){
+    public ResponseEntity<Void> saveArticle(@RequestBody @Valid ArticleDto articleDto){
         articleService.saveArticle(articleDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
