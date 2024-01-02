@@ -35,7 +35,7 @@ class ArticleControllerTest {
 
     @DisplayName("[POST] 게시글 생성 API - 정상 호출")
     @Test
-    void createArticle_Success_201() throws Exception {
+    void saveArticle_Success_201() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/article")
                     .content(mapper.writeValueAsString(ArticleDto.of("제목", "내용", "#해시태그")))
                     .contentType(MediaType.APPLICATION_JSON))
@@ -44,16 +44,16 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[POST] 게시글 생성 API - 실패")
-    @MethodSource("invalidCreate")
+    @MethodSource("invalidSave")
     @ParameterizedTest(name = "{index}: {1}")
-    void createArticle_Fail_400(ArticleDto articleDto, String message) throws Exception {
+    void saveArticle_Fail_400(ArticleDto articleDto, String message) throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/article")
                     .content(mapper.writeValueAsString(articleDto))
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
-    static Stream<Arguments> invalidCreate(){
+    static Stream<Arguments> invalidSave(){
         return Stream.of(
                 Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7"), "해시태그 개수 초과"),
                 Arguments.of(ArticleDto.of(null, "내용", "#해시태그"), "제목 누락"),

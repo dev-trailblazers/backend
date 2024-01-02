@@ -22,7 +22,7 @@ public class JpaRepositoryTest {
 
     @DisplayName("게시글 - 작성")
     @Test
-    void saveArticle_success() {
+    void saveArticle_Success() {
         //Given
         long preCount = articleRepository.count();
         //When
@@ -31,4 +31,5 @@ public class JpaRepositoryTest {
         //Then
         assertThat(postCount).isEqualTo(preCount + 1);
     }
+
 }

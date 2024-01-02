@@ -22,7 +22,7 @@ class ArticleServiceTest {
 
     @DisplayName("게시글 정보를 입력하면 게시글을 저장한다 - 성공")
     @Test
-    void saveArticle_success() {
+    void saveArticle_Success() {
         Article article = Article.of("제목", "내용", "#해시태그1#해시태그2");
         given(articleRepository.save(any(Article.class))).willReturn(article);
 
