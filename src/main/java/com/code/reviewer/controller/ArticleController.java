@@ -27,14 +27,20 @@ public class ArticleController {
     }
 
     @GetMapping("/title/{title}")
-    public ResponseEntity<List<ArticleDto>> searchArticleByTitle(@PathVariable String title) {
-        articleService.searchArticlesByTitle(title);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<List<ArticleDto>> searchArticlesByTitle(@PathVariable String title) {
+        List<ArticleDto> articleDtos = articleService.searchArticlesByTitle(title);
+        return ResponseEntity.status(HttpStatus.OK).body(articleDtos);
     }
 
     @GetMapping("/hashtag/{hashtag}")
-    public ResponseEntity<List<ArticleDto>> searchArticleByHashTag(@PathVariable String hashtag) {
-        articleService.searchArticlesByHashTag(hashtag);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<List<ArticleDto>> searchArticlesByHashTag(@PathVariable String hashtag) {
+        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag(hashtag);
+        return ResponseEntity.status(HttpStatus.OK).body(articleDtos);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id){
+        ArticleDto articleDto = articleService.getArticleById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(articleDto);
     }
 }

@@ -1,8 +1,7 @@
 package com.code.reviewer.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -10,6 +9,8 @@ import com.code.reviewer.domain.article.Article;
 import com.code.reviewer.domain.article.dto.ArticleDto;
 import com.code.reviewer.repository.ArticleRepository;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,5 +64,17 @@ class ArticleServiceTest {
         List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag("hashTag");
         //then
         assertThat(articleDtos.size()).isEqualTo(articles.size());
+    }
+
+    @DisplayName("게시글 아이디에 해당하는 게시글을 반환한다.")
+    @Test
+    void getArticleById_Success() {
+        //Given
+        Article article = Article.of("게시글 상세 조회 테스트", "내용1", "#해시태그1");
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(article));
+        //When
+        ArticleDto articleDto = articleService.getArticleById(1L);
+        //Then
+        assertThat(articleDto.title()).isEqualTo("게시글 상세 조회 테스트");
     }
 }

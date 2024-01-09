@@ -4,6 +4,8 @@ import com.code.reviewer.domain.article.Article;
 import com.code.reviewer.domain.article.dto.ArticleDto;
 import com.code.reviewer.repository.ArticleRepository;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,11 @@ public class ArticleService {
         return articles.stream()
                 .map(article -> ArticleDto.from(article))
                 .toList();
+    }
+
+    public ArticleDto getArticleById(Long id) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException());
+        return ArticleDto.from(article);
     }
 }
