@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.code.reviewer.domain.article.Article;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,16 @@ public class JpaRepositoryTest {
         assertThat(articles).hasSize(1);
     }
 
+    @DisplayName("게시글 - 게시글 상세 조회")
+    @Test
+    void getArticleById() {
+        //Given
+        articleRepository.save(Article.of("Article Detail Test", "내용", "#해시태그#해시태그2"));
+        //When
+        Article article = articleRepository.findById(1L).orElseThrow();
+        //Then
+        assertThat(article.getTitle()).isEqualTo("Article Detail Test");
+    }
 
     @EnableJpaAuditing
     @TestConfiguration

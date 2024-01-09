@@ -37,4 +37,10 @@ public class ArticleController {
         articleService.searchArticlesByHashTag(hashtag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id){
+        ArticleDto articleDto = articleService.getArticleById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(articleDto);
+    }
 }
