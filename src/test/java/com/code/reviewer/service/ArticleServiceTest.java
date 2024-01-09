@@ -49,4 +49,19 @@ class ArticleServiceTest {
         //then
         assertThat(articleDtos.size()).isEqualTo(articles.size());
     }
+
+    @DisplayName("해시태그를 입력하면 해시태그가 포함된 게시글 리스트를 반환한다.")
+    @Test
+    void searchArticlesByHashTag_Success() {
+        //given
+        List<Article> articles = List.of(
+                Article.of("제목1", "내용1", "#해시태그1"),
+                Article.of("제목2", "내용2", "#해시태그2")
+        );
+        given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString())).willReturn(articles);
+        //when
+        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag("hashTag");
+        //then
+        assertThat(articleDtos.size()).isEqualTo(articles.size());
+    }
 }

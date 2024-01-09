@@ -64,6 +64,13 @@ class ArticleControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @DisplayName("[GET] 게시글 해시태그 검색 API - 성공")
+    @Test
+    void searchArticleByHashTag_Success_200() throws Exception {
+        mvc.perform(get("/articles/hashtag/" + "hashtag"))
+                .andExpect(status().isOk());
+    }
+
     static Stream<Arguments> invalidSave(){
         return Stream.of(
                 Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7"), "해시태그 개수 초과"),

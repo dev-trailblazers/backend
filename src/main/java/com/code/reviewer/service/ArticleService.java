@@ -18,6 +18,15 @@ public class ArticleService {
 
     public List<ArticleDto> searchArticlesByTitle(String keyword) {
         List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(keyword);
-        return articles.stream().map(article -> ArticleDto.from(article)).toList();
+        return articles.stream()
+                .map(article -> ArticleDto.from(article))
+                .toList();
+    }
+
+    public List<ArticleDto> searchArticlesByHashTag(String hashTag) {
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag);
+        return articles.stream()
+                .map(article -> ArticleDto.from(article))
+                .toList();
     }
 }

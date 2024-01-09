@@ -47,6 +47,19 @@ public class JpaRepositoryTest {
         assertThat(articles).hasSize(1);
     }
 
+    @DisplayName("게시글 - 해시태그 검색")
+    @Test
+    void searchArticleByHashTag() {
+        //Given
+        String hashTag = "해시태그2";
+        articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
+        //When
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag);
+        //Then
+        assertThat(articles).hasSize(1);
+    }
+
+
     @EnableJpaAuditing
     @TestConfiguration
     public static class TestJpaConfig {

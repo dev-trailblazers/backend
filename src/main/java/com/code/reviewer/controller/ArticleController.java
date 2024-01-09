@@ -31,4 +31,10 @@ public class ArticleController {
         articleService.searchArticlesByTitle(title);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @GetMapping("/hashtag/{hashtag}")
+    public ResponseEntity<List<ArticleDto>> searchArticleByHashTag(@PathVariable String hashtag) {
+        articleService.searchArticlesByHashTag(hashtag);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
