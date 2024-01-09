@@ -15,14 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @DisplayName("API - 게시글 컨트롤러")
 @WebMvcTest(ArticleController.class)
@@ -59,14 +56,14 @@ class ArticleControllerTest {
 
     @DisplayName("[GET] 게시글 제목 검색 API - 성공")
     @Test
-    void searchArticleByTitle_Success_200() throws Exception {
+    void searchArticlesByTitle_Success_200() throws Exception {
         mvc.perform(get("/articles/title/" + "keyword"))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("[GET] 게시글 해시태그 검색 API - 성공")
     @Test
-    void searchArticleByHashTag_Success_200() throws Exception {
+    void searchArticlesByHashTag_Success_200() throws Exception {
         mvc.perform(get("/articles/hashtag/" + "hashtag"))
                 .andExpect(status().isOk());
     }
