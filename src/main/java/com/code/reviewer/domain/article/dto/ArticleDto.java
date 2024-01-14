@@ -19,6 +19,10 @@ public record ArticleDto(
         return new ArticleDto(null, title, content, hashTags, null, null);
     }
 
+    public static ArticleDto of(Long id, String title, String content, String hashTags) {
+        return new ArticleDto(id, title, content, hashTags, null, null);
+    }
+
     public static ArticleDto of(Long id, String title, String content, String hashTags, LocalDateTime createdAt,
                                 LocalDateTime modifiedAt) {
         return new ArticleDto(id, title, content, hashTags, createdAt, modifiedAt);

@@ -3,9 +3,10 @@ package com.code.reviewer.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.code.reviewer.domain.article.Article;
-import java.util.List;
-import java.util.Optional;
 
+import java.util.List;
+
+import com.code.reviewer.domain.article.dto.ArticleDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class JpaRepositoryTest {
         assertThat(articles).hasSize(1);
     }
 
+    // TODO: 1/10/24 - 검색 트랜잭션 readOnly 찾아보기
     @DisplayName("게시글 - 해시태그 검색")
     @Test
     void searchArticleByHashTag() {
@@ -67,11 +69,24 @@ public class JpaRepositoryTest {
         //Given
         articleRepository.save(Article.of("Article Detail Test", "내용", "#해시태그#해시태그2"));
         //When
-        Article article = articleRepository.findById(1L).orElseThrow();
+        int count = articleRepository.findAllByTitleContainingIgnoreCase("Article Detail Test").size();
         //Then
-        assertThat(article.getTitle()).isEqualTo("Article Detail Test");
+        assertThat(count).isEqualTo(1);
     }
 
+    @DisplayName("게시글 - 게시글 삭제")
+    @Test
+    void deleteArticleById() {
+        //Given
+        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그");
+        articleRepository.save(ArticleDto.to(articleDto));
+        //When
+        articleRepository.deleteById(1L);
+        //Then
+        assertThat(articleRepository.findById(1L)).isEmpty();
+    }
+
+    // TODO: 1/10/24 - 게시글 생성 중복 없애기
     @EnableJpaAuditing
     @TestConfiguration
     public static class TestJpaConfig {
