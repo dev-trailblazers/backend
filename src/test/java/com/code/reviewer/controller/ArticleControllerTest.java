@@ -1,8 +1,7 @@
 package com.code.reviewer.controller;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,6 +71,22 @@ class ArticleControllerTest {
     @Test
     void getArticleById_Success_200() throws Exception {
         mvc.perform(get("/articles/id/" + 1))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("[PUT] 게시글 수정 API - 성공")
+    @Test
+    void updateArticle_Success_200() throws Exception {
+        mvc.perform(put("/articles")
+                .content(mapper.writeValueAsString(ArticleDto.of(1L, "제목", "내용", "#해시태그")))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("[DELETE] 게시글 삭제 API - 성공")
+    @Test
+    void deleteArticle_Success_200() throws Exception {
+        mvc.perform(delete("/articles/id/" + 1L))
                 .andExpect(status().isOk());
     }
 

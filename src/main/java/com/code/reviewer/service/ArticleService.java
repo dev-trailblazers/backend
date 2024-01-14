@@ -37,4 +37,15 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException());
         return ArticleDto.from(article);
     }
+
+    public void updateArticle(ArticleDto articleDto) {
+        if(articleDto.id() == null){
+            throw new IllegalArgumentException("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
+        }
+        articleRepository.save(ArticleDto.to(articleDto));
+    }
+
+    public void deleteArticleById(Long id) {
+        articleRepository.deleteById(id);
+    }
 }

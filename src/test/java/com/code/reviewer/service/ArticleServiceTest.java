@@ -1,6 +1,7 @@
 package com.code.reviewer.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -76,5 +77,36 @@ class ArticleServiceTest {
         ArticleDto articleDto = articleService.getArticleById(1L);
         //Then
         assertThat(articleDto.title()).isEqualTo("게시글 상세 조회 테스트");
+    }
+
+    @DisplayName("새로운 게시글로 수정한다.")
+    @Test
+    void updateArticle_Success() {
+        //Given
+        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그");
+        //When
+        articleService.updateArticle(articleDto);
+        //Then
+        then(articleRepository).should().save(any(Article.class));
+    }
+
+    @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
+    @Test
+    void updateArticle_Fail_NonId() {
+        //Given
+        ArticleDto articleDto = ArticleDto.of("제목", "내용", "#해시태그");
+        //When & Then
+        assertThatThrownBy(() -> articleService.updateArticle(articleDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
+    }
+
+    @DisplayName("게시글 아이디에 해당하는 게시글을 삭제한다.")
+    @Test
+    void deleteArticle_Success() {
+        //Given & When
+        articleService.deleteArticleById(1L);
+        //Then
+        then(articleRepository).should().deleteById(anyLong());
     }
 }
