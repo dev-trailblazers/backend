@@ -30,23 +30,20 @@ public class JpaRepositoryTest {
     @DisplayName("게시글 - 작성")
     @Test
     void saveArticle() {
-        //Given
-        long preCount = articleRepository.count();
         //When
-        articleRepository.save(Article.of("제목", "내용", "#해시태그#해시태그2"));
+        createArticle();
         long postCount = articleRepository.count();
         //Then
-        assertThat(postCount).isEqualTo(preCount + 1);
+        assertThat(postCount).isEqualTo(1);
     }
 
     @DisplayName("게시글 - 제목 검색")
     @Test
     void searchArticleByTitle() {
         //Given
-        String searchKeyword = "search";
-        articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
+        createArticle();
         //When
-        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(searchKeyword, PageRequest.of(0,10));
+        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase("Title", PageRequest.of(0,10));
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -56,10 +53,9 @@ public class JpaRepositoryTest {
     @Test
     void searchArticleByHashTag() {
         //Given
-        String hashTag = "해시태그2";
-        articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
+        createArticle();
         //When
-        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag, PageRequest.of(0,10));
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase("hashTag", PageRequest.of(0,10));
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -68,9 +64,9 @@ public class JpaRepositoryTest {
     @Test
     void getArticleById() {
         //Given
-        articleRepository.save(Article.of("Article Detail Test", "내용", "#해시태그#해시태그2"));
+        createArticle();
         //When
-        int count = articleRepository.findAllByTitleContainingIgnoreCase("Article Detail Test", null).size();
+        int count = articleRepository.findAllByTitleContainingIgnoreCase("title", PageRequest.of(0,10)).size();
         //Then
         assertThat(count).isEqualTo(1);
     }
@@ -87,7 +83,11 @@ public class JpaRepositoryTest {
         assertThat(articleRepository.findById(1L)).isEmpty();
     }
 
-    // TODO: 1/10/24 - 게시글 생성 중복 없애기
+
+    private void createArticle(){
+        articleRepository.save(Article.of("title", "content", "#hashTag1#hashTag2"));
+    }
+
     @EnableJpaAuditing
     @TestConfiguration
     public static class TestJpaConfig {
