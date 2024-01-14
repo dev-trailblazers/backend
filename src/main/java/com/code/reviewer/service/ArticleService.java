@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -18,15 +19,15 @@ public class ArticleService {
         articleRepository.save(ArticleDto.to(articleDto));
     }
 
-    public List<ArticleDto> searchArticlesByTitle(String keyword) {
-        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(keyword);
+    public List<ArticleDto> searchArticlesByTitle(String keyword, Pageable pageable) {
+        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(keyword, pageable);
         return articles.stream()
                 .map(article -> ArticleDto.from(article))
                 .toList();
     }
 
-    public List<ArticleDto> searchArticlesByHashTag(String hashTag) {
-        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag);
+    public List<ArticleDto> searchArticlesByHashTag(String hashTag, Pageable pageable) {
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag, pageable);
         return articles.stream()
                 .map(article -> ArticleDto.from(article))
                 .toList();

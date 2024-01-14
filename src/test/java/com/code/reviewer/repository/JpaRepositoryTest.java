@@ -45,7 +45,7 @@ public class JpaRepositoryTest {
         String searchKeyword = "search";
         articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
         //When
-        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(searchKeyword);
+        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(searchKeyword, null);
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -58,7 +58,7 @@ public class JpaRepositoryTest {
         String hashTag = "해시태그2";
         articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
         //When
-        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag);
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag, null);
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -69,7 +69,7 @@ public class JpaRepositoryTest {
         //Given
         articleRepository.save(Article.of("Article Detail Test", "내용", "#해시태그#해시태그2"));
         //When
-        int count = articleRepository.findAllByTitleContainingIgnoreCase("Article Detail Test").size();
+        int count = articleRepository.findAllByTitleContainingIgnoreCase("Article Detail Test", null).size();
         //Then
         assertThat(count).isEqualTo(1);
     }

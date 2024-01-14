@@ -45,9 +45,9 @@ class ArticleServiceTest {
                 Article.of("제목1", "내용1", "#해시태그"),
                 Article.of("제목2", "내용2", "#해시태그")
         );
-        given(articleRepository.findAllByTitleContainingIgnoreCase(anyString())).willReturn(articles);
+        given(articleRepository.findAllByTitleContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
-        List<ArticleDto> articleDtos = articleService.searchArticlesByTitle("keyword");
+        List<ArticleDto> articleDtos = articleService.searchArticlesByTitle("keyword", null);
         //then
         assertThat(articleDtos.size()).isEqualTo(articles.size());
     }
@@ -60,9 +60,9 @@ class ArticleServiceTest {
                 Article.of("제목1", "내용1", "#해시태그1"),
                 Article.of("제목2", "내용2", "#해시태그2")
         );
-        given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString())).willReturn(articles);
+        given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
-        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag("hashTag");
+        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag("hashTag", null);
         //then
         assertThat(articleDtos.size()).isEqualTo(articles.size());
     }
