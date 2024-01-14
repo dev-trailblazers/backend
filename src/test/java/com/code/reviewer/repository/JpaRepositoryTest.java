@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @DisplayName("JPA 리포지토리")
@@ -45,7 +46,7 @@ public class JpaRepositoryTest {
         String searchKeyword = "search";
         articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
         //When
-        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(searchKeyword, null);
+        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase(searchKeyword, PageRequest.of(0,10));
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -58,7 +59,7 @@ public class JpaRepositoryTest {
         String hashTag = "해시태그2";
         articleRepository.save(Article.of("Search Test", "내용", "#해시태그#해시태그2"));
         //When
-        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag, null);
+        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase(hashTag, PageRequest.of(0,10));
         //Then
         assertThat(articles).hasSize(1);
     }
