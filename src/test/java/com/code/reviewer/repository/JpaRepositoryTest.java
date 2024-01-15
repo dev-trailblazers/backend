@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.code.reviewer.domain.article.Article;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.code.reviewer.domain.article.dto.ArticleDto;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -75,7 +78,7 @@ public class JpaRepositoryTest {
     @Test
     void deleteArticleById() {
         //Given
-        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그");
+        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그", List.of());
         articleRepository.save(ArticleDto.to(articleDto));
         //When
         articleRepository.deleteById(1L);
@@ -85,11 +88,15 @@ public class JpaRepositoryTest {
 
 
     private void createArticle(){
-        articleRepository.save(Article.of("title", "content", "#hashTag1#hashTag2"));
+        articleRepository.save(Article.of("title", "content", "#hashTag1#hashTag2", List.of()));
     }
 
     @EnableJpaAuditing
     @TestConfiguration
     public static class TestJpaConfig {
+        @Bean
+        public AuditorAware<Long> auditorAware() {
+            return () -> Optional.ofNullable(1L);
+        }
     }
 }

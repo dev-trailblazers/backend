@@ -25,14 +25,17 @@ class ArticleServiceTest {
     @InjectMocks ArticleService articleService;
     @Mock ArticleRepository articleRepository;
 
+    private final static ArticleDto fixedArticleDto = ArticleDto.of("제목", "내용", "#해시태그", List.of());
+    private final static Article fixedArticle = ArticleDto.to(fixedArticleDto);
+
+
     @DisplayName("게시글 정보를 입력하면 게시글을 저장한다 - 성공")
     @Test
     void saveArticle_Success() {
         //given
-        Article article = Article.of("제목", "내용", "#해시태그1#해시태그2");
-        given(articleRepository.save(any(Article.class))).willReturn(article);
+        given(articleRepository.save(any(Article.class))).willReturn(fixedArticle);
         //when
-        articleService.saveArticle(ArticleDto.from(article));
+        articleService.saveArticle(ArticleDto.from(fixedArticle));
         //then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -42,8 +45,8 @@ class ArticleServiceTest {
     void searchArticlesByTitle_Success() {
         //given
         List<Article> articles = List.of(
-                Article.of("제목1", "내용1", "#해시태그"),
-                Article.of("제목2", "내용2", "#해시태그")
+                Article.of("제목1", "내용1", "#해시태그", List.of()),
+                Article.of("제목2", "내용2", "#해시태그", List.of())
         );
         given(articleRepository.findAllByTitleContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
@@ -57,8 +60,8 @@ class ArticleServiceTest {
     void searchArticlesByHashTag_Success() {
         //given
         List<Article> articles = List.of(
-                Article.of("제목1", "내용1", "#해시태그1"),
-                Article.of("제목2", "내용2", "#해시태그2")
+                Article.of("제목1", "내용1", "#해시태그1", List.of()),
+                Article.of("제목2", "내용2", "#해시태그2", List.of())
         );
         given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
@@ -71,21 +74,18 @@ class ArticleServiceTest {
     @Test
     void getArticleById_Success() {
         //Given
-        Article article = Article.of("게시글 상세 조회 테스트", "내용1", "#해시태그1");
-        given(articleRepository.findById(anyLong())).willReturn(Optional.of(article));
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(fixedArticle));
         //When
         ArticleDto articleDto = articleService.getArticleById(1L);
         //Then
-        assertThat(articleDto.title()).isEqualTo("게시글 상세 조회 테스트");
+        assertThat(articleDto.title()).isEqualTo("제목");
     }
 
     @DisplayName("새로운 게시글로 수정한다.")
     @Test
     void updateArticle_Success() {
-        //Given
-        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그");
-        //When
-        articleService.updateArticle(articleDto);
+        //Given & When
+        articleService.updateArticle(ArticleDto.of(1L, "제목", "내용", "해시태그", List.of()));
         //Then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -93,10 +93,7 @@ class ArticleServiceTest {
     @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
     @Test
     void updateArticle_Fail_NonId() {
-        //Given
-        ArticleDto articleDto = ArticleDto.of("제목", "내용", "#해시태그");
-        //When & Then
-        assertThatThrownBy(() -> articleService.updateArticle(articleDto))
+        assertThatThrownBy(() -> articleService.updateArticle(fixedArticleDto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
     }

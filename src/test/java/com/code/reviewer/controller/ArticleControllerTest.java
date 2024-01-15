@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.code.reviewer.domain.article.dto.ArticleDto;
 import com.code.reviewer.service.ArticleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,11 @@ class ArticleControllerTest {
     private final MockMvc mvc;
     private final ObjectMapper mapper;
 
-    @MockBean private ArticleService articleService;
+    @MockBean
+    private ArticleService articleService;
+
+    private ArticleDto fixedArticleDto = ArticleDto.of("제목", "내용", "#해시태그", List.of());
+
 
     public ArticleControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
         this.mvc = mvc;
@@ -37,8 +43,8 @@ class ArticleControllerTest {
     @Test
     void saveArticle_Success_201() throws Exception {
         mvc.perform(post("/articles")
-                    .content(mapper.writeValueAsString(ArticleDto.of("제목", "내용", "#해시태그")))
-                    .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(fixedArticleDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -48,8 +54,8 @@ class ArticleControllerTest {
     @ParameterizedTest(name = "{index}: {1}")
     void saveArticle_Fail_400(ArticleDto articleDto, String message) throws Exception {
         mvc.perform(post("/articles")
-                    .content(mapper.writeValueAsString(articleDto))
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(articleDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -78,8 +84,8 @@ class ArticleControllerTest {
     @Test
     void updateArticle_Success_200() throws Exception {
         mvc.perform(put("/articles")
-                .content(mapper.writeValueAsString(ArticleDto.of(1L, "제목", "내용", "#해시태그")))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(fixedArticleDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -90,11 +96,11 @@ class ArticleControllerTest {
                 .andExpect(status().isOk());
     }
 
-    static Stream<Arguments> invalidSave(){
+    static Stream<Arguments> invalidSave() {
         return Stream.of(
-                Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7"), "해시태그 개수 초과"),
-                Arguments.of(ArticleDto.of(null, "내용", "#해시태그"), "제목 누락"),
-                Arguments.of(ArticleDto.of("제목", null, "#해시태그"), "내용 누락")
+                Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7", List.of()), "해시태그 개수 초과"),
+                Arguments.of(ArticleDto.of(null, "내용", "#해시태그", List.of()), "제목 누락"),
+                Arguments.of(ArticleDto.of("제목", null, "#해시태그", List.of()), "내용 누락")
         );
     }
 }

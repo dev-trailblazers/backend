@@ -1,11 +1,10 @@
 package com.code.reviewer.domain.article;
 
 import com.code.reviewer.domain.AuditingField;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.code.reviewer.domain.comment.Comment;
+import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 
@@ -24,17 +23,21 @@ public class Article extends AuditingField {
 
     private String hashTags;
 
+    @OneToMany(mappedBy = "article")
+    private List<Comment> comments;
+
 
     protected Article() {
     }
 
-    protected Article(String title, String content, String hashTags) {
+    protected Article(String title, String content, String hashTags, List<Comment> comments) {
         this.title = Objects.requireNonNull(title);
         this.content = Objects.requireNonNull(content);
         this.hashTags = hashTags;
+        this.comments = comments;
     }
 
-    public static Article of(String title, String content, String hashTags) {
-        return new Article(title, content, hashTags);
+    public static Article of(String title, String content, String hashTags, List<Comment> comments) {
+        return new Article(title, content, hashTags, comments);
     }
 }
