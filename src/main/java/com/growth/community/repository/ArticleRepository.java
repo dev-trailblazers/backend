@@ -1,7 +1,8 @@
-package com.code.reviewer.repository;
+package com.growth.community.repository;
 
 
-import com.code.reviewer.domain.article.Article;
+import com.growth.community.domain.article.Article;
+
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;

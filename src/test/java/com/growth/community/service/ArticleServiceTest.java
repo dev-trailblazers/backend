@@ -1,4 +1,4 @@
-package com.code.reviewer.service;
+package com.growth.community.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,9 +6,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import com.code.reviewer.domain.article.Article;
-import com.code.reviewer.domain.article.dto.ArticleDto;
-import com.code.reviewer.repository.ArticleRepository;
+import com.growth.community.domain.article.Article;
+import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.repository.ArticleRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,20 +23,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("비즈니스 로직 - 게시글")
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
-    @InjectMocks ArticleService articleService;
-    @Mock ArticleRepository articleRepository;
-
-    private final static ArticleDto fixedArticleDto = ArticleDto.of("제목", "내용", "#해시태그", List.of());
-    private final static Article fixedArticle = ArticleDto.to(fixedArticleDto);
+    @InjectMocks
+    ArticleService articleService;
+    @Mock
+    ArticleRepository articleRepository;
 
 
     @DisplayName("게시글 정보를 입력하면 게시글을 저장한다 - 성공")
     @Test
     void saveArticle_Success() {
         //given
-        given(articleRepository.save(any(Article.class))).willReturn(fixedArticle);
+        given(articleRepository.save(any(Article.class))).willReturn(createArticle());
         //when
-        articleService.saveArticle(ArticleDto.from(fixedArticle));
+        articleService.saveArticle(ArticleDto.fromEntity(createArticle()));
         //then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -45,8 +45,8 @@ class ArticleServiceTest {
     void searchArticlesByTitle_Success() {
         //given
         List<Article> articles = List.of(
-                Article.of("제목1", "내용1", "#해시태그", List.of()),
-                Article.of("제목2", "내용2", "#해시태그", List.of())
+                new Article("제목1", "내용1", "#해시태그"),
+                new Article("제목2", "내용2", "#해시태그")
         );
         given(articleRepository.findAllByTitleContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
@@ -60,8 +60,8 @@ class ArticleServiceTest {
     void searchArticlesByHashTag_Success() {
         //given
         List<Article> articles = List.of(
-                Article.of("제목1", "내용1", "#해시태그1", List.of()),
-                Article.of("제목2", "내용2", "#해시태그2", List.of())
+                new Article("제목1", "내용1", "#해시태그"),
+                new Article("제목2", "내용2", "#해시태그")
         );
         given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString(), any())).willReturn(articles);
         //when
@@ -74,7 +74,7 @@ class ArticleServiceTest {
     @Test
     void getArticleById_Success() {
         //Given
-        given(articleRepository.findById(anyLong())).willReturn(Optional.of(fixedArticle));
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(createArticle()));
         //When
         ArticleDto articleDto = articleService.getArticleById(1L);
         //Then
@@ -84,16 +84,29 @@ class ArticleServiceTest {
     @DisplayName("새로운 게시글로 수정한다.")
     @Test
     void updateArticle_Success() {
-        //Given & When
-        articleService.updateArticle(ArticleDto.of(1L, "제목", "내용", "해시태그", List.of()));
+        //Given
+        ArticleDto dto = ArticleDto.builder()
+                .id(1L)
+                .title("수정된 제목")
+                .content("수정된 내용")
+                .hashTags("#수정된 해시태그")
+                .build();
+        Article article = createArticle();
+        given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        //When
+        articleService.updateArticle(dto);
         //Then
-        then(articleRepository).should().save(any(Article.class));
+        assertThat(article)
+                .hasFieldOrPropertyWithValue("title", dto.title())  //첫번째 파라미터는 article 필드명, 두번째는 기댓값
+                .hasFieldOrPropertyWithValue("content", dto.content())
+                .hasFieldOrPropertyWithValue("hashTags", dto.hashTags());
+        then(articleRepository).should().getReferenceById(dto.id());    //should => 호출되었는지 검증
     }
 
     @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
     @Test
     void updateArticle_Fail_NonId() {
-        assertThatThrownBy(() -> articleService.updateArticle(fixedArticleDto))
+        assertThatThrownBy(() -> articleService.updateArticle(createArticleDto()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
     }
@@ -105,5 +118,13 @@ class ArticleServiceTest {
         articleService.deleteArticleById(1L);
         //Then
         then(articleRepository).should().deleteById(anyLong());
+    }
+
+    private ArticleDto createArticleDto() {
+        return ArticleDto.of("title", "content", "#hashtag");
+    }
+
+    private Article createArticle() {
+        return new Article("title", "content", "#hashtag");
     }
 }

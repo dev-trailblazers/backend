@@ -1,4 +1,4 @@
-package com.code.reviewer.domain.validation;
+package com.growth.community.domain.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

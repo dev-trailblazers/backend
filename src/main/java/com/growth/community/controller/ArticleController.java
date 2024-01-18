@@ -1,7 +1,7 @@
-package com.code.reviewer.controller;
+package com.growth.community.controller;
 
-import com.code.reviewer.domain.article.dto.ArticleDto;
-import com.code.reviewer.service.ArticleService;
+import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class ArticleController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateArticle(@RequestBody ArticleDto articleDto) {
+    public ResponseEntity<Void> updateArticle(@RequestBody @Valid ArticleDto articleDto) {
         articleService.updateArticle(articleDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -1,4 +1,4 @@
-package com.code.reviewer;
+package com.growth.community;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

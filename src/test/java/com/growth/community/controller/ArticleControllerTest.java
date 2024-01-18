@@ -1,15 +1,15 @@
-package com.code.reviewer.controller;
+package com.growth.community.controller;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.code.reviewer.domain.article.dto.ArticleDto;
-import com.code.reviewer.service.ArticleService;
+import com.growth.community.controller.ArticleController;
+import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.service.ArticleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,11 @@ class ArticleControllerTest {
     @MockBean
     private ArticleService articleService;
 
-    private ArticleDto fixedArticleDto = ArticleDto.of("제목", "내용", "#해시태그", List.of());
+    private ArticleDto fixedArticleDto = ArticleDto.builder()
+            .title("제목")
+            .content("내용")
+            .hashTags("#해시태그")
+            .build();
 
 
     public ArticleControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
@@ -98,9 +102,9 @@ class ArticleControllerTest {
 
     static Stream<Arguments> invalidSave() {
         return Stream.of(
-                Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7", List.of()), "해시태그 개수 초과"),
-                Arguments.of(ArticleDto.of(null, "내용", "#해시태그", List.of()), "제목 누락"),
-                Arguments.of(ArticleDto.of("제목", null, "#해시태그", List.of()), "내용 누락")
+                Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7"), "해시태그 개수 초과"),
+                Arguments.of(ArticleDto.of(null, "내용", "#해시태그"), "제목 누락"),
+                Arguments.of(ArticleDto.of("제목", null, "#해시태그"), "내용 누락")
         );
     }
 }

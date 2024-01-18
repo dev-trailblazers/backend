@@ -1,4 +1,4 @@
-package com.code.reviewer.domain;
+package com.growth.community.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

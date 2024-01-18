@@ -1,13 +1,13 @@
-package com.code.reviewer.repository;
+package com.growth.community.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.code.reviewer.domain.article.Article;
+import com.growth.community.domain.article.Article;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.code.reviewer.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.ArticleDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,21 +74,39 @@ public class JpaRepositoryTest {
         assertThat(count).isEqualTo(1);
     }
 
+    @DisplayName("게시글 - 게시글 상세 댓글 조회")
+    @Test
+    void getCommentsByArticleId() {
+        //Given
+        createArticle();
+        //When
+        int count = articleRepository.findAllByTitleContainingIgnoreCase("title", PageRequest.of(0,10)).size();
+        //Then
+        assertThat(count).isEqualTo(1);
+    }
+
+
     @DisplayName("게시글 - 게시글 삭제")
     @Test
     void deleteArticleById() {
         //Given
-        ArticleDto articleDto = ArticleDto.of(1L, "제목", "내용", "#해시태그", List.of());
-        articleRepository.save(ArticleDto.to(articleDto));
+        createArticle();
         //When
         articleRepository.deleteById(1L);
         //Then
         assertThat(articleRepository.findById(1L)).isEmpty();
     }
 
-
     private void createArticle(){
-        articleRepository.save(Article.of("title", "content", "#hashTag1#hashTag2", List.of()));
+        articleRepository.save(
+                ArticleDto.toEntity(
+                        ArticleDto.builder()
+                                .id(1L)
+                                .title("title")
+                                .content("content")
+                                .hashTags("#hashtag")
+                                .build()
+                ));
     }
 
     @EnableJpaAuditing

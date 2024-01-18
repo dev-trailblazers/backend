@@ -1,4 +1,4 @@
-package com.code.reviewer;
+package com.growth.community;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
