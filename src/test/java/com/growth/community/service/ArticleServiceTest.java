@@ -19,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DisplayName("비즈니스 로직 - 게시글")
 @ExtendWith(MockitoExtension.class)
@@ -40,35 +42,21 @@ class ArticleServiceTest {
         then(articleRepository).should().save(any(Article.class));
     }
 
-    @DisplayName("게시글 제목 키워드를 입력하면 제목에 키워드가 포함된 게시글 리스트를 반환한다.")
+    @DisplayName("키워드를 입력하면 제목 또는 해시태그에 키워드가 포함된 게시글 리스트를 반환한다.")
     @Test
-    void searchArticlesByTitle_Success() {
+    void searchArticlesByKeyword_Success() {
         //given
         List<Article> articles = List.of(
                 new Article("제목1", "내용1", "#해시태그"),
                 new Article("제목2", "내용2", "#해시태그")
         );
-        given(articleRepository.findAllByTitleContainingIgnoreCase(anyString(), any())).willReturn(articles);
+        given(articleRepository.findAllByKeyword(anyString(), any(Pageable.class))).willReturn(articles);
         //when
-        List<ArticleDto> articleDtos = articleService.searchArticlesByTitle("keyword", null);
+        List<ArticleDto> articleDtos = articleService.searchArticlesByKeyword("keyword", PageRequest.of(0,10));
         //then
-        assertThat(articleDtos.size()).isEqualTo(articles.size());
+        assertThat(articleDtos.size()).isEqualTo(2);
     }
 
-    @DisplayName("해시태그를 입력하면 해시태그가 포함된 게시글 리스트를 반환한다.")
-    @Test
-    void searchArticlesByHashTag_Success() {
-        //given
-        List<Article> articles = List.of(
-                new Article("제목1", "내용1", "#해시태그"),
-                new Article("제목2", "내용2", "#해시태그")
-        );
-        given(articleRepository.findAllByHashTagsContainingIgnoreCase(anyString(), any())).willReturn(articles);
-        //when
-        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag("hashTag", null);
-        //then
-        assertThat(articleDtos.size()).isEqualTo(articles.size());
-    }
 
     @DisplayName("게시글 아이디에 해당하는 게시글을 반환한다.")
     @Test
@@ -78,7 +66,7 @@ class ArticleServiceTest {
         //When
         ArticleDto articleDto = articleService.getArticleById(1L);
         //Then
-        assertThat(articleDto.title()).isEqualTo("제목");
+        assertThat(articleDto.title()).isEqualTo("title");
     }
 
     @DisplayName("새로운 게시글로 수정한다.")

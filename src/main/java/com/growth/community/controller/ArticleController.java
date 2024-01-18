@@ -26,17 +26,10 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/title/{title}")
-    public ResponseEntity<List<ArticleDto>> searchArticlesByTitle(@PathVariable String title,
-                                                                  @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<ArticleDto> articleDtos = articleService.searchArticlesByTitle(title, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(articleDtos);
-    }
-
-    @GetMapping("/hashtag/{hashtag}")
-    public ResponseEntity<List<ArticleDto>> searchArticlesByHashTag(@PathVariable String hashtag,
+    @GetMapping("/keyword/{keyword}")
+    public ResponseEntity<List<ArticleDto>> searchArticlesByKeyword(@PathVariable String keyword,
                                                                     @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<ArticleDto> articleDtos = articleService.searchArticlesByHashTag(hashtag, pageable);
+        List<ArticleDto> articleDtos = articleService.searchArticlesByKeyword(keyword, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(articleDtos);
     }
 
@@ -48,12 +41,14 @@ public class ArticleController {
 
     @PutMapping
     public ResponseEntity<Void> updateArticle(@RequestBody @Valid ArticleDto articleDto) {
+        // TODO: 유저 아이디로 본인 글인지 검증
         articleService.updateArticle(articleDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
+        // TODO: 유저 아이디로 본인 글인지 검증
         articleService.deleteArticleById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

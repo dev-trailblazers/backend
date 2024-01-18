@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    List<Article> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
-    List<Article> findAllByHashTagsContainingIgnoreCase(String hashTag, Pageable pageable);
-
+    @Query("SELECT a FROM Article a WHERE LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(a.hashTags) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Article> findAllByKeyword(String keyword, Pageable pageable);
 }

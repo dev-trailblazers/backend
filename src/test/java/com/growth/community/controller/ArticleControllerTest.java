@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.growth.community.controller.ArticleController;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.service.ArticleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,17 +62,10 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("[GET] 게시글 제목 검색 API - 성공")
+    @DisplayName("[GET] 게시글 키워드 검색 API - 성공")
     @Test
-    void searchArticlesByTitle_Success_200() throws Exception {
-        mvc.perform(get("/articles/title/" + "keyword"))
-                .andExpect(status().isOk());
-    }
-
-    @DisplayName("[GET] 게시글 해시태그 검색 API - 성공")
-    @Test
-    void searchArticlesByHashTag_Success_200() throws Exception {
-        mvc.perform(get("/articles/hashtag/" + "hashtag"))
+    void searchArticlesByKeyword_Success_200() throws Exception {
+        mvc.perform(get("/articles/keyword/" + "keyword"))
                 .andExpect(status().isOk());
     }
 

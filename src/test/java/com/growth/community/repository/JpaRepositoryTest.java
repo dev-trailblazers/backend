@@ -10,6 +10,8 @@ import java.util.Optional;
 import com.growth.community.domain.article.dto.ArticleDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -40,25 +42,15 @@ public class JpaRepositoryTest {
         assertThat(postCount).isEqualTo(1);
     }
 
-    @DisplayName("게시글 - 제목 검색")
-    @Test
-    void searchArticleByTitle() {
+    // TODO: - 검색 트랜잭션 readOnly 찾아보기
+    @DisplayName("게시글 - 키워드 검색")
+    @ValueSource(strings = {"hashTag", "Title"})
+    @ParameterizedTest(name = "{index}: {0}")
+    void searchArticleByHashTag(String keyword) {
         //Given
         createArticle();
         //When
-        List<Article> articles = articleRepository.findAllByTitleContainingIgnoreCase("Title", PageRequest.of(0,10));
-        //Then
-        assertThat(articles).hasSize(1);
-    }
-
-    // TODO: 1/10/24 - 검색 트랜잭션 readOnly 찾아보기
-    @DisplayName("게시글 - 해시태그 검색")
-    @Test
-    void searchArticleByHashTag() {
-        //Given
-        createArticle();
-        //When
-        List<Article> articles = articleRepository.findAllByHashTagsContainingIgnoreCase("hashTag", PageRequest.of(0,10));
+        List<Article> articles = articleRepository.findAllByKeyword(keyword, PageRequest.of(0,10));
         //Then
         assertThat(articles).hasSize(1);
     }
@@ -69,22 +61,10 @@ public class JpaRepositoryTest {
         //Given
         createArticle();
         //When
-        int count = articleRepository.findAllByTitleContainingIgnoreCase("title", PageRequest.of(0,10)).size();
+        int count = articleRepository.findAllByKeyword("title", PageRequest.of(0,10)).size();
         //Then
         assertThat(count).isEqualTo(1);
     }
-
-    @DisplayName("게시글 - 게시글 상세 댓글 조회")
-    @Test
-    void getCommentsByArticleId() {
-        //Given
-        createArticle();
-        //When
-        int count = articleRepository.findAllByTitleContainingIgnoreCase("title", PageRequest.of(0,10)).size();
-        //Then
-        assertThat(count).isEqualTo(1);
-    }
-
 
     @DisplayName("게시글 - 게시글 삭제")
     @Test
