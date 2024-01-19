@@ -5,12 +5,11 @@ spring:
     username: sa
     password:
   jpa:
-    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
     open-in-view: false
-  sql.init.mode: always
+  sql.init.mode: never
 logging:
   level:
     com.com.growth.community: debug

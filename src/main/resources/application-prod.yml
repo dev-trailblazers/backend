@@ -6,13 +6,13 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     open-in-view: false
 
 logging:
   level:
-    com.reivewer.codereivew: debug
+    com.com.growth.community: debug
     org.springframework.web.servlet: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 

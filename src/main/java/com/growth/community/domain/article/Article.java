@@ -28,7 +28,7 @@ public class Article extends AuditingField {
     private String content;
 
     @Setter
-    private String hashTags;
+    private String hashtags;
 
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
@@ -40,10 +40,10 @@ public class Article extends AuditingField {
 
 
     // TODO: 왜 연관관계는 생성자 파라미터로 넣지 않을까?
-    public Article(String title, String content, String hashTags) {
+    public Article(String title, String content, String hashtags) {
         this.title = Objects.requireNonNull(title);
         this.content = Objects.requireNonNull(content);
-        this.hashTags = hashTags;
+        this.hashtags = hashtags;
     }
 
     @Override

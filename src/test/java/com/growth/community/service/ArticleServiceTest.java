@@ -77,7 +77,7 @@ class ArticleServiceTest {
                 .id(1L)
                 .title("수정된 제목")
                 .content("수정된 내용")
-                .hashTags("#수정된 해시태그")
+                .hashtags("#수정된 해시태그")
                 .build();
         Article article = createArticle();
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
@@ -87,7 +87,7 @@ class ArticleServiceTest {
         assertThat(article)
                 .hasFieldOrPropertyWithValue("title", dto.title())  //첫번째 파라미터는 article 필드명, 두번째는 기댓값
                 .hasFieldOrPropertyWithValue("content", dto.content())
-                .hasFieldOrPropertyWithValue("hashTags", dto.hashTags());
+                .hasFieldOrPropertyWithValue("hashtags", dto.hashtags());
         then(articleRepository).should().getReferenceById(dto.id());    //should => 호출되었는지 검증
     }
 

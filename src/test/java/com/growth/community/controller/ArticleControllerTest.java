@@ -33,7 +33,7 @@ class ArticleControllerTest {
     private ArticleDto fixedArticleDto = ArticleDto.builder()
             .title("제목")
             .content("내용")
-            .hashTags("#해시태그")
+            .hashtags("#해시태그")
             .build();
 
 
