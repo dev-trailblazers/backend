@@ -7,6 +7,7 @@ import com.growth.community.domain.article.Article;
 import java.util.List;
 import java.util.Optional;
 
+import com.growth.community.domain.comment.Comment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,9 +29,12 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 public class JpaRepositoryTest {
     private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
 
-    public JpaRepositoryTest(@Autowired ArticleRepository articleRepository) {
+    public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,
+                             @Autowired CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
+        this.commentRepository = commentRepository;
     }
 
     @DisplayName("게시글 - 작성")
@@ -69,6 +73,16 @@ public class JpaRepositoryTest {
         assertThat(articleRepository.findById(1L)).isEmpty();
     }
 
+
+    @DisplayName("댓글 - 댓글 작성")
+    @Test
+    void saveComment() {
+        //Given
+        Article article = articleRepository.findById(1L).get();
+        Comment comment = new Comment(article, "댓글 작성");
+        //When & Then
+        commentRepository.save(comment);
+    }
 
     @EnableJpaAuditing
     @TestConfiguration
