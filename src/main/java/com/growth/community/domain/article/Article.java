@@ -10,8 +10,10 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 public class Article extends AuditingField {
@@ -30,6 +32,7 @@ public class Article extends AuditingField {
     @Setter
     private String hashtags;
 
+    @ToString.Exclude
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;

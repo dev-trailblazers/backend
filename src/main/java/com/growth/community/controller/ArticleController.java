@@ -1,6 +1,7 @@
 package com.growth.community.controller;
 
 import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
 
@@ -34,9 +35,9 @@ public class ArticleController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id) {
-        ArticleDto articleDto = articleService.getArticleById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(articleDto);
+    public ResponseEntity<ArticleWithCommentDto> getArticleById(@PathVariable Long id) {
+        ArticleWithCommentDto articleWithCommentDto = articleService.getArticleWithCommentsById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(articleWithCommentDto);
     }
 
     @PutMapping

@@ -7,8 +7,10 @@ import com.growth.community.repository.ArticleRepository;
 import com.growth.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;

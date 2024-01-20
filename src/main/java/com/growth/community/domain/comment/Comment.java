@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@ToString
 @NoArgsConstructor
 @Entity
 public class Comment extends AuditingField {

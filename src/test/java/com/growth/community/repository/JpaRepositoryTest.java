@@ -6,6 +6,7 @@ import com.growth.community.domain.article.Article;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.growth.community.domain.comment.Comment;
 import org.junit.jupiter.api.DisplayName;
@@ -61,7 +62,12 @@ public class JpaRepositoryTest {
     @DisplayName("게시글 - 게시글 상세 조회")
     @Test
     void getArticleById() {
-        assertThat(articleRepository.findById(1L)).isPresent();
+        //Given & When
+        Article article = articleRepository.findById(1L).get();
+        Set<Comment> comments = article.getComments();
+        //Then
+        assertThat(comments).isNotEmpty();
+        assertThat(article).isNotNull();
     }
 
     @DisplayName("게시글 - 게시글 삭제")

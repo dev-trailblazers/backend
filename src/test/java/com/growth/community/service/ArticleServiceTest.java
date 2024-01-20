@@ -8,10 +8,13 @@ import static org.mockito.BDDMockito.then;
 
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.ArticleWithCommentDto;
+import com.growth.community.domain.comment.Comment;
 import com.growth.community.repository.ArticleRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,15 +61,21 @@ class ArticleServiceTest {
     }
 
 
-    @DisplayName("게시글 아이디에 해당하는 게시글을 반환한다.")
+    @DisplayName("게시글 아이디에 해당하는 게시글과 댓글을 반환한다.")
     @Test
     void getArticleById_Success() {
         //Given
-        given(articleRepository.findById(anyLong())).willReturn(Optional.of(createArticle()));
+        Long articleId = 1L;
+        Article article = createArticle();
+        given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
         //When
-        ArticleDto articleDto = articleService.getArticleById(1L);
+        ArticleWithCommentDto dto = articleService.getArticleWithCommentsById(articleId);
         //Then
-        assertThat(articleDto.title()).isEqualTo("title");
+        assertThat(dto)
+                .hasFieldOrPropertyWithValue("title", article.getTitle())
+                .hasFieldOrPropertyWithValue("content", article.getContent())
+                .hasFieldOrPropertyWithValue("hashtags", article.getHashtags());
+        then(articleRepository).should().findById(articleId);
     }
 
     @DisplayName("새로운 게시글로 수정한다.")

@@ -2,6 +2,7 @@ package com.growth.community.service;
 
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.repository.ArticleRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
@@ -32,10 +35,11 @@ public class ArticleService {
         return toDtoList(articles);
     }
 
-    public ArticleDto getArticleById(Long id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException());
-        return ArticleDto.fromEntity(article);
+    @Transactional(readOnly = true)
+    public ArticleWithCommentDto getArticleWithCommentsById(Long id) {
+        return articleRepository.findById(id)
+                .map(ArticleWithCommentDto::fromEntity)
+                .orElseThrow(() -> new NoSuchElementException("게시글이 없습니다 - articleId: " + id));
     }
 
 
