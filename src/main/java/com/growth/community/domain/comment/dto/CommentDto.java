@@ -16,6 +16,10 @@ public record CommentDto(
         Long modifiedBy
 ) {
 
+    public static CommentDto of(Long id, Long articleId, String content){
+        return new CommentDto(id, content, articleId, null, null, null);
+    }
+
     public static CommentDto of(Long articleId, String content){
         return new CommentDto(null, content, articleId, null, null, null);
     }

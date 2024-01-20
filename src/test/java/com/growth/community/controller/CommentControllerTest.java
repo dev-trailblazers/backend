@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,13 +32,23 @@ public class CommentControllerTest {
         this.mapper = mapper;
     }
 
-    @DisplayName("[POST] 댓글 저장 API - 정상 호출 ")
+    @DisplayName("[POST] 댓글 저장 API - 정상 호출")
     @Test
     void saveComment_Success_201() throws Exception {
         mvc.perform(post("/comments")
                         .content(mapper.writeValueAsString(fixedCommentDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @DisplayName("[PUT] 댓글 수정 API - 정상 호출")
+    @Test
+    void updateComment_Success_200() throws Exception {
+        mvc.perform(put("/comments")
+                        .content(mapper.writeValueAsString(fixedCommentDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }

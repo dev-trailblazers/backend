@@ -6,9 +6,12 @@ import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.domain.validation.HashTags;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,9 @@ public record ArticleWithCommentDto(
                 .title(article.getTitle())
                 .content(article.getContent())
                 .hashtags(article.getHashtags())
-                .CommentDtos(article.getComments().stream()
+                .CommentDtos(Optional.ofNullable(article.getComments())
+                        .orElseGet(Collections::emptySet)
+                        .stream()
                         .map(CommentDto::fromEntity)
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .createdAt(article.getCreatedAt())

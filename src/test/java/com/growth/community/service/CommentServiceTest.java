@@ -12,10 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -41,4 +40,22 @@ public class CommentServiceTest {
         then(commentRepository).should().save(any(Comment.class));
     }
 
+    @DisplayName("댓글 내용을 입력하면 댓글을 수정한다 - 성공")
+    @Test
+    void updateComment_Success() {
+        //Given
+        Comment comment = createComment();
+        CommentDto dto = CommentDto.of(1L, 1L, "수정된 댓글");
+        given(commentRepository.getReferenceById(dto.id())).willReturn(comment);
+        //When
+        commentService.updateComment(dto);
+        //Then
+        assertThat(comment.getContent())
+                .isEqualTo(dto.content());
+        then(commentRepository).should().getReferenceById(dto.id());
+    }
+
+    private Comment createComment(){
+        return new Comment(new Article("title", "content", "#hashtag"), "작성된 댓글");
+    }
 }
