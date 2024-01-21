@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -53,6 +54,15 @@ public class CommentServiceTest {
         assertThat(comment.getContent())
                 .isEqualTo(dto.content());
         then(commentRepository).should().getReferenceById(dto.id());
+    }
+
+    @DisplayName("댓글 아이디를 통해 댓글을 삭제한다 - 성공")
+    @Test
+    void deleteComment_Success() {
+        //Given
+        commentService.deleteCommentById(anyLong());
+        //Then
+        then(commentRepository).should().deleteById(anyLong());
     }
 
     private Comment createComment(){

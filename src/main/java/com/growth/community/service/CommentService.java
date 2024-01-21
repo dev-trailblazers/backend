@@ -36,4 +36,9 @@ public class CommentService {
             log.warn("댓글 수정 실패. 댓글을 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
     }
+
+    public void deleteCommentById(long id) {
+        // TODO: 본인 댓글인지 검증
+        commentRepository.deleteById(id);
+    }
 }

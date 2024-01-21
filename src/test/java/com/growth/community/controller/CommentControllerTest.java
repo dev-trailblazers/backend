@@ -11,8 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +47,14 @@ public class CommentControllerTest {
         mvc.perform(put("/comments")
                         .content(mapper.writeValueAsString(fixedCommentDto))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("[DELETE] 댓글 삭제 API - 정상 호출")
+    @Test
+    void deleteComment_Success_200() throws Exception {
+        mvc.perform(delete("/comments/id/" + 1))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
