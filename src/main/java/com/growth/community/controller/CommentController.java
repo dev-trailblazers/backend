@@ -16,20 +16,20 @@ public class CommentController {
 
     // TODO: dto 객체를 요청 시 필요한 필드만 가진 requestDto로 변경
     @PostMapping
-    public ResponseEntity<Void> saveComment(@RequestBody CommentDto dto){
+    public ResponseEntity<Void> postComment(@RequestBody CommentDto dto){
         commentService.saveComment(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateComment(@RequestBody CommentDto dto){
+    public ResponseEntity<Void> putComment(@RequestBody CommentDto dto){
         commentService.updateComment(dto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id){
-        commentService.deleteCommentById(id);
+        commentService.deleteComment(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

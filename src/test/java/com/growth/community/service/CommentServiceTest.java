@@ -60,7 +60,7 @@ public class CommentServiceTest {
     @Test
     void deleteComment_Success() {
         //Given
-        commentService.deleteCommentById(anyLong());
+        commentService.deleteComment(anyLong());
         //Then
         then(commentRepository).should().deleteById(anyLong());
     }

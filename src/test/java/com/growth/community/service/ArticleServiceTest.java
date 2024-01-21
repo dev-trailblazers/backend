@@ -1,21 +1,9 @@
 package com.growth.community.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
-import com.growth.community.domain.comment.Comment;
 import com.growth.community.repository.ArticleRepository;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +12,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @DisplayName("비즈니스 로직 - 게시글")
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +37,7 @@ class ArticleServiceTest {
         //given
         given(articleRepository.save(any(Article.class))).willReturn(createArticle());
         //when
-        articleService.saveArticle(ArticleDto.fromEntity(createArticle()));
+        articleService.createArticle(ArticleDto.fromEntity(createArticle()));
         //then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -69,7 +66,7 @@ class ArticleServiceTest {
         Article article = createArticle();
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
         //When
-        ArticleWithCommentDto dto = articleService.getArticleWithCommentsById(articleId);
+        ArticleWithCommentDto dto = articleService.viewArticleWithComments(articleId);
         //Then
         assertThat(dto)
                 .hasFieldOrPropertyWithValue("title", article.getTitle())
@@ -112,7 +109,7 @@ class ArticleServiceTest {
     @Test
     void deleteArticle_Success() {
         //Given & When
-        articleService.deleteArticleById(1L);
+        articleService.deleteArticle(1L);
         //Then
         then(articleRepository).should().deleteById(anyLong());
     }

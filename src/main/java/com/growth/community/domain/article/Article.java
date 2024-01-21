@@ -10,10 +10,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
-@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 public class Article extends AuditingField {
@@ -32,7 +30,6 @@ public class Article extends AuditingField {
     @Setter
     private String hashtags;
 
-    @ToString.Exclude
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
@@ -42,7 +39,6 @@ public class Article extends AuditingField {
     private boolean isRemoved;
 
 
-    // TODO: 왜 연관관계는 생성자 파라미터로 넣지 않을까?
     public Article(String title, String content, String hashtags) {
         this.title = Objects.requireNonNull(title);
         this.content = Objects.requireNonNull(content);

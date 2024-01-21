@@ -4,9 +4,6 @@ import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/articles")
 @RestController
@@ -22,35 +21,33 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping
-    public ResponseEntity<Void> saveArticle(@RequestBody @Valid ArticleDto articleDto) {
-        articleService.saveArticle(articleDto);
+    public ResponseEntity<Void> postArticle(@RequestBody @Valid ArticleDto articleDto) {
+        articleService.createArticle(articleDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/keyword/{keyword}")
-    public ResponseEntity<List<ArticleDto>> searchArticlesByKeyword(@PathVariable String keyword,
+    public ResponseEntity<List<ArticleDto>> getArticlesByKeyword(@PathVariable String keyword,
                                                                     @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<ArticleDto> articleDtos = articleService.searchArticlesByKeyword(keyword, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(articleDtos);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(articleService.searchArticlesByKeyword(keyword, pageable));
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<ArticleWithCommentDto> getArticleById(@PathVariable Long id) {
-        ArticleWithCommentDto articleWithCommentDto = articleService.getArticleWithCommentsById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(articleWithCommentDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(articleService.viewArticleWithComments(id));
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateArticle(@RequestBody @Valid ArticleDto articleDto) {
-        // TODO: 유저 아이디로 본인 글인지 검증
+    public ResponseEntity<Void> putArticle(@RequestBody @Valid ArticleDto articleDto) {
         articleService.updateArticle(articleDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-        // TODO: 유저 아이디로 본인 글인지 검증
-        articleService.deleteArticleById(id);
+        articleService.deleteArticle(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
