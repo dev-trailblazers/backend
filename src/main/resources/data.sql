@@ -104,7 +104,7 @@ INSERT INTO article (title, content, hashtags, created_at, modified_at, modified
 
 -- Comment x 10
 INSERT INTO comment (article_id, content, is_removed, created_at, modified_at, modified_by) VALUES
-(1, 'Bypass Right Basilic Vein to Upper Vein with Autologous Venous Tissue, Open Approach', true, '2023-07-13 00:06:34', '2023-08-23 10:47:49', 1),
+(1, 'Bypass Right Basilic Vein to Upper Vein with Autologous Venous Tissue, Open Approach', false, '2023-07-13 00:06:34', '2023-08-23 10:47:49', 1),
 (2, 'Resection of Right Frontal Sinus, Open Approach', true, '2023-05-22 10:18:14', '2024-01-07 06:02:11', 2),
 (3, 'Dilation of Middle Colic Artery, Bifurcation, with Four or More Intraluminal Devices, Percutaneous Approach', false, '2023-05-28 14:02:46', '2023-03-16 06:14:12', 3),
 (4, 'Alteration of Right Upper Extremity with Autologous Tissue Substitute, Percutaneous Endoscopic Approach', true, '2023-01-29 11:55:32', '2023-09-03 04:03:38', 4),

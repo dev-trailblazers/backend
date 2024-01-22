@@ -32,18 +32,18 @@ public class CommentServiceTest {
 
     @DisplayName("댓글을 입력하면 댓글을 저장한다 - 성공")
     @Test
-    void saveComment_Success() {
+    void createComment_success() {
         //Given
         given(commentRepository.save(any(Comment.class))).willReturn(null);
         //When
-        commentService.saveComment(CommentDto.of(1L, "댓글 내용"));
+        commentService.createComment(CommentDto.of(1L, "댓글 내용"));
         //Then
         then(commentRepository).should().save(any(Comment.class));
     }
 
     @DisplayName("댓글 내용을 입력하면 댓글을 수정한다 - 성공")
     @Test
-    void updateComment_Success() {
+    void updateComment_success() {
         //Given
         Comment comment = createComment();
         CommentDto dto = CommentDto.of(1L, 1L, "수정된 댓글");
@@ -51,14 +51,13 @@ public class CommentServiceTest {
         //When
         commentService.updateComment(dto);
         //Then
-        assertThat(comment.getContent())
-                .isEqualTo(dto.content());
+        assertThat(comment.getContent()).isEqualTo(dto.content());
         then(commentRepository).should().getReferenceById(dto.id());
     }
 
     @DisplayName("댓글 아이디를 통해 댓글을 삭제한다 - 성공")
     @Test
-    void deleteComment_Success() {
+    void deleteComment_success() {
         //Given
         commentService.deleteComment(anyLong());
         //Then
