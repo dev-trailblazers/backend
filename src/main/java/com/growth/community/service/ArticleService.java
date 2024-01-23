@@ -58,21 +58,22 @@ public class ArticleService {
     }
 
     public void deleteArticle(Long articleId) {
-        try {
-            Article article = articleRepository.getReferenceById(articleId);
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글 삭제 실패(게시글을 찾을 수 없습니다.) - articleId: " + articleId));
 
-            // TODO: 로그인 구현 후 유저 아이디 검사 추가
+        // TODO: 로그인 구현 후 유저 아이디 검사 추가
+        long commentCount = 0;
 
-            long commentCount = article.getComments()
+        if (article.getComments() != null) {
+            commentCount = article.getComments()
                     .stream()
                     .filter(comment -> !comment.isRemoved())
                     .count();
-            if(commentCount > 0) {
-                throw new CanNotDeleteException("댓글이 달린 게시글은 삭제할 수 없습니다.");
-            }
-        } catch (EntityNotFoundException e){
-            log.warn("게시글 삭제 실패(게시글을 찾을 수 없습니다.) - articleId: {} \n {}", articleId, e.getLocalizedMessage());
         }
+        if (commentCount > 0) {
+            throw new CanNotDeleteException("댓글이 달린 게시글은 삭제할 수 없습니다.");
+        }
+        articleRepository.deleteById(articleId);
     }
 
 }

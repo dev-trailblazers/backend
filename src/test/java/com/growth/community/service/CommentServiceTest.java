@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -59,9 +61,11 @@ public class CommentServiceTest {
     @Test
     void deleteComment_success() {
         //Given
-        commentService.deleteComment(anyLong());
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(createComment()));
+        commentService.deleteComment(1L);
+        Optional<Comment> comment = commentRepository.findById(1L);
         //Then
-        then(commentRepository).should().deleteById(anyLong());
+        assertThat(comment.get().isRemoved()).isTrue();
     }
 
     private Comment createComment(){
