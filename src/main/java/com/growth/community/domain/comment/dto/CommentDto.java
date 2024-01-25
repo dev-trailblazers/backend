@@ -2,6 +2,8 @@ package com.growth.community.domain.comment.dto;
 
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.comment.Comment;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -9,8 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 public record CommentDto(
         Long id,
-        String content,
-        Long articleId,
+        @NotBlank String content,
+        @NotNull Long articleId,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         Long modifiedBy

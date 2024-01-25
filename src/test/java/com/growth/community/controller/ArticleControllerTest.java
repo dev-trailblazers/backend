@@ -1,15 +1,9 @@
 package com.growth.community.controller;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.service.ArticleService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +14,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.stream.Stream;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("API - 게시글 컨트롤러")
 @WebMvcTest(ArticleController.class)
@@ -44,7 +44,7 @@ class ArticleControllerTest {
 
     @DisplayName("[POST] 게시글 생성 API - 정상 호출")
     @Test
-    void saveArticle_Success_201() throws Exception {
+    void postArticle_201() throws Exception {
         mvc.perform(post("/articles")
                 .content(mapper.writeValueAsString(fixedArticleDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -52,47 +52,57 @@ class ArticleControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("[POST] 게시글 생성 API - 실패")
-    @MethodSource("invalidSave")
+    @DisplayName("[POST] 게시글 생성 API - 실패(잘못된 요청 데이터)")
+    @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
-    void saveArticle_Fail_400(ArticleDto articleDto, String message) throws Exception {
+    void postArticle_dataIsInvalid_400(ArticleDto dto, String message) throws Exception {
         mvc.perform(post("/articles")
-                        .content(mapper.writeValueAsString(articleDto))
+                        .content(mapper.writeValueAsString(dto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("[GET] 게시글 키워드 검색 API - 성공")
+    @DisplayName("[GET] 게시글 키워드 검색 API - 정상 호출")
     @Test
-    void searchArticlesByKeyword_Success_200() throws Exception {
+    void getArticlesByKeyword_200() throws Exception {
         mvc.perform(get("/articles/keyword/" + "keyword"))
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("[GET] 게시글 상세 조회 API - 성공")
+    @DisplayName("[GET] 게시글 상세 조회 API - 정상 호출")
     @Test
-    void getArticleById_Success_200() throws Exception {
+    void getArticleById_200() throws Exception {
         mvc.perform(get("/articles/id/" + 1))
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("[PUT] 게시글 수정 API - 성공")
+    @DisplayName("[PUT] 게시글 수정 API - 정상 호출")
     @Test
-    void updateArticle_Success_200() throws Exception {
+    void putArticle_200() throws Exception {
         mvc.perform(put("/articles")
                         .content(mapper.writeValueAsString(fixedArticleDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("[DELETE] 게시글 삭제 API - 성공")
+    @DisplayName("[PUT] 게시글 수정 API - 실패(잘못된 요청 데이터)")
+    @MethodSource("invalidArticleDto")
+    @ParameterizedTest(name = "{index}: {1}")
+    void putArticle_articleIsInValid_400(ArticleDto dto, String message) throws Exception {
+        mvc.perform(put("/articles")
+                        .content(mapper.writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("[DELETE] 게시글 삭제 API - 정상 호출")
     @Test
-    void deleteArticle_Success_200() throws Exception {
+    void deleteArticle_200() throws Exception {
         mvc.perform(delete("/articles/id/" + 1L))
                 .andExpect(status().isOk());
     }
 
-    static Stream<Arguments> invalidSave() {
+    static Stream<Arguments> invalidArticleDto() {
         return Stream.of(
                 Arguments.of(ArticleDto.of("제목", "내용", "#1#2#3#4#5#6#7"), "해시태그 개수 초과"),
                 Arguments.of(ArticleDto.of(null, "내용", "#해시태그"), "제목 누락"),

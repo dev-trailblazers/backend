@@ -19,7 +19,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
 
-    public void saveComment(CommentDto dto) {
+    public void createComment(CommentDto dto) {
         try {
             Article article = articleRepository.getReferenceById(dto.articleId());
             Comment comment = new Comment(article, dto.content());

@@ -17,7 +17,7 @@ public record ArticleWithCommentDto(
         String title,
         String content,
         String hashtags,
-        Set<CommentDto> CommentDtos,
+        Set<CommentDto> commentDtos,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         Long modifiedBy) {
@@ -27,7 +27,7 @@ public record ArticleWithCommentDto(
                 .title(article.getTitle())
                 .content(article.getContent())
                 .hashtags(article.getHashtags())
-                .CommentDtos(Optional.ofNullable(article.getComments())
+                .commentDtos(Optional.ofNullable(article.getComments())
                         .orElseGet(Collections::emptySet)
                         .stream()
                         .filter(comment -> !comment.isRemoved())

@@ -3,13 +3,12 @@ package com.growth.community.domain.article;
 import com.growth.community.domain.AuditingField;
 import com.growth.community.domain.comment.Comment;
 import jakarta.persistence.*;
-
-import java.util.Objects;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -33,10 +32,6 @@ public class Article extends AuditingField {
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
-
-    @Setter
-    @Column(columnDefinition = "boolean default false")
-    private boolean isRemoved;
 
 
     public Article(String title, String content, String hashtags) {
