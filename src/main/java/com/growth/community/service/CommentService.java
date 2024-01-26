@@ -22,7 +22,7 @@ public class CommentService {
     public void createComment(CommentDto dto) {
         try {
             Article article = articleRepository.getReferenceById(dto.articleId());
-            Comment comment = new Comment(article, dto.content());
+            Comment comment = new Comment(article, dto.parentCommentId(), dto.content());
             commentRepository.save(comment);
         } catch (EntityNotFoundException e) {
             log.warn("댓글 생성 실패(게시글을 찾을 수 없습니다) - articleId: {} \n {}", dto.articleId(), e.getLocalizedMessage());

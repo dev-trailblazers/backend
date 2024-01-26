@@ -19,6 +19,8 @@ public class Comment extends AuditingField {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    private Long parentCommentId;
+
     @Setter
     @Column(nullable = false, length = 10000)
     private String content;
@@ -27,8 +29,14 @@ public class Comment extends AuditingField {
     @Column(columnDefinition = "boolean default false")
     private boolean isRemoved;
 
-    public Comment(Article article, String content) {
+    public Comment(Article article,String content) {
         this.article = article;
+        this.content = content;
+    }
+
+    public Comment(Article article, Long parentCommentId, String content) {
+        this.article = article;
+        this.parentCommentId = parentCommentId;
         this.content = content;
     }
 }
