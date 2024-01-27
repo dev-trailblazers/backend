@@ -110,12 +110,13 @@ class ArticleServiceTest {
     @Test
     void deleteArticle_success() {
         //Given & When
+        given(articleRepository.findById(anyLong())).willReturn(Optional.of(createArticle()));
         articleService.deleteArticle(1L);
         //Then
         then(articleRepository).should().deleteById(anyLong());
     }
 
-
+    //게시글이 없을 때 예외 테스트
 
     private ArticleDto createArticleDto() {
         return ArticleDto.of("title", "content", "#hashtag");

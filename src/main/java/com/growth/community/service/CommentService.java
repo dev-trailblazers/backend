@@ -22,7 +22,7 @@ public class CommentService {
     public void createComment(CommentDto dto) {
         try {
             Article article = articleRepository.getReferenceById(dto.articleId());
-            Comment comment = new Comment(article, dto.content());
+            Comment comment = new Comment(article, dto.parentCommentId(), dto.content());
             commentRepository.save(comment);
         } catch (EntityNotFoundException e) {
             log.warn("댓글 생성 실패(게시글을 찾을 수 없습니다) - articleId: {} \n {}", dto.articleId(), e.getLocalizedMessage());
@@ -45,14 +45,12 @@ public class CommentService {
     }
 
     public void deleteComment(long commentId) {
-        try {
-            Comment comment = commentRepository.getReferenceById(commentId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글 삭제 실패(댓글을 찾을 수 없습니다) - commentId:" + commentId));
 
-            // TODO: 로그인 구현 후 유저 아이디 검사 추가
 
-            comment.setRemoved(true);
-        } catch (EntityNotFoundException e) {
-            log.warn("댓글 삭제 실패(댓글을 찾을 수 없습니다) - commentId: {} \n {}", commentId, e.getLocalizedMessage());
-        }
+        // TODO: 로그인 구현 후 유저 아이디 검사 추가
+
+        comment.setRemoved(true);
     }
 }

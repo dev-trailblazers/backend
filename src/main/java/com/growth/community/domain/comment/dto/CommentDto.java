@@ -13,17 +13,19 @@ public record CommentDto(
         Long id,
         @NotBlank String content,
         @NotNull Long articleId,
+        Long parentCommentId,
+
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         Long modifiedBy
 ) {
 
     public static CommentDto of(Long id, Long articleId, String content){
-        return new CommentDto(id, content, articleId, null, null, null);
+        return new CommentDto(id, content, articleId, null, null, null, null);
     }
 
     public static CommentDto of(Long articleId, String content){
-        return new CommentDto(null, content, articleId, null, null, null);
+        return new CommentDto(null, content, articleId, null, null, null, null);
     }
 
     public static CommentDto fromEntity(Comment comment){
@@ -31,13 +33,14 @@ public record CommentDto(
                 .id(comment.getId())
                 .content(comment.getContent())
                 .articleId(comment.getArticle().getId())
+                .parentCommentId(comment.getParentCommentId())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .modifiedBy(comment.getModifiedBy())
                 .build();
     }
 
-    public static Comment toEntity(Article article, String content){
-        return new Comment(article, content);
+    public static Comment toEntity(Article article, Long parentCommentId, String content){
+        return new Comment(article, parentCommentId, content);
     }
 }
