@@ -1,6 +1,7 @@
 package com.growth.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growth.community.config.SecurityConfig;
 import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("API - 댓글 컨트롤러")
+@Import(SecurityConfig.class)
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
     private final MockMvc mvc;
