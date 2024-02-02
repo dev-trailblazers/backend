@@ -1,3 +1,12 @@
+-- User
+INSERT INTO user_account (email, password, role, name, nickname, birth, gender, phone_number, region, career, position, locked, created_at, modified_at, modified_By)
+VALUES
+    ('testuser1@example.com', 'password1', 'USER', 'John Doe', 'johnny', '1990-01-01', 'M', '01023456789', 'CityA', 5, 'Manager', false, NOW(), NOW(), 1),
+    ('testuser2@example.com', 'password2', 'USER', 'Jane Doe', 'jane', '1995-05-15', 'F', '01087654321', 'CityB', 3, 'Developer', false, NOW(), NOW(), 1),
+    ('testuser3@example.com', 'password3', 'USER', 'Bob Smith', 'bob', '1985-08-20', 'M', '01022334455', 'CityC', 8, 'Senior Analyst', false, NOW(), NOW(), 1);
+
+
+
 -- Article x 100
 INSERT INTO article (title, content, hashtags, created_at, modified_at, modified_by) VALUES
 ('World according to Ion B., The (Lumea vazuta de Ion B)', 'Other repair or plastic operations on bone, other bones', '#913612', '2023-08-05 07:51:42', '2024-01-17 05:35:09', 1),

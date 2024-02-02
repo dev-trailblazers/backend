@@ -1,9 +1,17 @@
 package com.growth.community.config;
 
+import com.growth.community.domain.user.dto.Principal;
+import com.growth.community.domain.user.dto.UserAccountDto;
+import com.growth.community.repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,20 +20,33 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                                .anyRequest().permitAll()
-//                        .requestMatchers(
-//                                HttpMethod.GET,
-//                                "/articles/keyword/**",
-//                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-//                        ).permitAll()
-//                        .anyRequest().authenticated()
-                )
-                .build();
+                            .requestMatchers(
+                                    HttpMethod.GET,
+                                    "/articles/**",
+                                    "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                                    , "/"
+                            ).permitAll()
+                            .anyRequest().authenticated()
+                ).build();
     }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository){
+        return email -> userAccountRepository.findByEmail(email)
+                    .map(UserAccountDto::fromEntity)
+                    .map(Principal::fromDto)
+                    .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - email:" + email));
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
