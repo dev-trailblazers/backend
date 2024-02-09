@@ -15,6 +15,8 @@ public record UserAccountDto(
         Long id,
         @Email(message = "이메일 형식이 아닙니다.")
         String email,
+
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,15}$")
         String password,
         String role,
 
@@ -32,12 +34,6 @@ public record UserAccountDto(
         String position
 ) {
 
-        public static UserAccountDto fromEntity(UserAccount userAccount){
-                return UserAccountDto.builder()
-                        .id(userAccount.getId())
-                        .build();
-        }
-
         public static UserAccountDto of(Long id, String email, String password, String nickname) {
                 return new UserAccountDto(
                         id,
@@ -53,5 +49,39 @@ public record UserAccountDto(
                         1,
                         null
                 );
+        }
+
+        public static UserAccountDto fromEntity(UserAccount userAccount){
+                return UserAccountDto.builder()
+                        .id(userAccount.getId())
+                        .email(userAccount.getEmail())
+                        .password(userAccount.getPassword())
+                        .role(userAccount.getRole())
+                        .name(userAccount.getName())
+                        .nickname(userAccount.getNickname())
+                        .birth(userAccount.getBirth())
+                        .gender(userAccount.getGender())
+                        .phoneNumber(userAccount.getPhoneNumber())
+                        .region(userAccount.getRegion())
+                        .career(userAccount.getCareer())
+                        .position(userAccount.getPosition())
+                        .build();
+        }
+
+        public static UserAccount toEntity(UserAccountDto dto) {
+                return UserAccount.builder()
+                        .id(dto.id)
+                        .email(dto.email)
+                        .password(dto.password)
+                        .role(dto.role)
+                        .name(dto.name)
+                        .nickname(dto.nickname)
+                        .birth(dto.birth)
+                        .gender(dto.gender)
+                        .phoneNumber(dto.phoneNumber)
+                        .region(dto.region)
+                        .career(dto.career)
+                        .position(dto.position)
+                        .build();
         }
 }

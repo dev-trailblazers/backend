@@ -24,26 +24,32 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                            .requestMatchers(
-                                    HttpMethod.GET,
-                                    "/articles/**",
-                                    "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-                                    , "/"
-                            ).permitAll()
-                            .anyRequest().authenticated()
-                ).build();
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/articles/**",
+                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                                , "/join"
+                        ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/login"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                ).formLogin(login -> login.defaultSuccessUrl("/articles/keyword/world"))
+                .logout(logout -> logout.logoutSuccessUrl("/"))
+                .build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository){
+    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
         return email -> userAccountRepository.findByEmail(email)
-                    .map(UserAccountDto::fromEntity)
-                    .map(Principal::fromDto)
-                    .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - email:" + email));
+                .map(UserAccountDto::fromEntity)
+                .map(Principal::fromDto)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - email:" + email));
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

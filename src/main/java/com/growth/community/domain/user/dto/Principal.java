@@ -17,7 +17,7 @@ public record Principal(
         Collection<? extends GrantedAuthority> authorities
 ) implements UserDetails {
     public static Principal of(Long userId, String password, String email, String nickname) {
-        Set<RoleType> roleTypes = Set.of(RoleType.values());
+        Set<RoleType> roleTypes = Set.of(RoleType.USER);
 
         return new Principal(
                 userId,
@@ -60,7 +60,7 @@ public record Principal(
     @Override public boolean isEnabled() { return true; }
 
     public enum RoleType {
-        USER("ROLE_USER");
+        USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
         @Getter private final String name;
         RoleType(String name){

@@ -2,6 +2,7 @@ package com.growth.community.controller;
 
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
+import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +23,9 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping
-    public ResponseEntity<Void> postArticle(@RequestBody @Valid ArticleDto articleDto) {
+    public ResponseEntity<Void> postArticle(@RequestBody @Valid ArticleDto articleDto,
+                                            @AuthenticationPrincipal Principal principal) {
+        System.out.println(principal.id() + " " + principal.getUsername());
         articleService.createArticle(articleDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -2,7 +2,9 @@ package com.growth.community.domain.user;
 
 import com.growth.community.domain.AuditingField;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
@@ -10,12 +12,14 @@ import java.util.Objects;
 
 
 @AllArgsConstructor
+@Builder
 @Getter
 @Entity
 public class UserAccount extends AuditingField {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Email
     private String email;
     private String password;
     private String role;

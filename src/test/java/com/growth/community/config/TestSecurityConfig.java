@@ -15,25 +15,25 @@ import static org.mockito.BDDMockito.given;
 
 @Import(SecurityConfig.class)
 public class TestSecurityConfig {
-    @MockBean private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountRepository userAccountRepository;
 
     @BeforeTestMethod
-    public void securitySetUp(){
-        given(userAccountRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(new UserAccount(
-                        1L,
-                        "testuser1@example.com",
-                        "password",
-                        "ROLE_USER",
-                        "CHAN_YEONG",
-                        "CHANY",
-                        new Date(),
-                        'M',
-                        "01023953042",
-                        "영주",
-                        1,
-                        "백엔드",
-                        false
-                )));
+    public void securitySetUp() {
+        given(userAccountRepository.findByEmail(anyString())).willReturn(Optional.of(new UserAccount(
+                1L,
+                "testuser1@example.com",
+                "password",
+                "ROLE_USER",
+                "CHAN_YEONG",
+                "CHANY",
+                new Date(),
+                'M',
+                "01023953042",
+                "영주",
+                1,
+                "백엔드",
+                false
+        )));
     }
 }
