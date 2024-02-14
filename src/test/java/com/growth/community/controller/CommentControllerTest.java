@@ -1,6 +1,7 @@
 package com.growth.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growth.community.config.TestSecurityConfig;
 import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
@@ -21,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("API - 댓글 컨트롤러")
+@Import(TestSecurityConfig.class)
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
     private final MockMvc mvc;
@@ -35,6 +40,7 @@ public class CommentControllerTest {
     }
 
     @DisplayName("[POST] 댓글 저장 API - 정상 호출")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void postComment_dataIsValid_201() throws Exception {
         mvc.perform(post("/comments")
@@ -45,6 +51,7 @@ public class CommentControllerTest {
     }
 
     @DisplayName("[POST] 댓글 저장 API - 실패(데이터 누락)")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidCommentDto")
     @ParameterizedTest(name = "{index}: {1}")
     void postComment_missingData_400(CommentDto dto, String message) throws Exception {
@@ -57,6 +64,7 @@ public class CommentControllerTest {
 
 
     @DisplayName("[PUT] 댓글 수정 API - 정상 호출")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void updateComment_dataIsValid_200() throws Exception {
         mvc.perform(put("/comments")
@@ -67,6 +75,7 @@ public class CommentControllerTest {
     }
 
     @DisplayName("[PUT] 댓글 수정 API - 실패(데이터 누락)")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidCommentDto")
     @ParameterizedTest(name = "{index}: {1}")
     void updateComment_dataIsInvalid_400(CommentDto dto, String message) throws Exception {
@@ -79,6 +88,7 @@ public class CommentControllerTest {
 
 
     @DisplayName("[DELETE] 댓글 삭제 API - 정상 호출")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void deleteComment_idIsValid_200() throws Exception {
         mvc.perform(delete("/comments/id/" + 1))

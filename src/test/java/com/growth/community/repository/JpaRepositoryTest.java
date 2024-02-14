@@ -2,6 +2,7 @@ package com.growth.community.repository;
 
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.comment.Comment;
+import com.growth.community.domain.user.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,16 +24,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JPA 테스트")
 @ActiveProfiles("test")
-//@AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
 public class JpaRepositoryTest {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,
-                             @Autowired CommentRepository commentRepository) {
+                             @Autowired CommentRepository commentRepository,
+                             @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @DisplayName("게시글 - 작성")
@@ -128,6 +131,11 @@ public class JpaRepositoryTest {
         commentRepository.deleteById(1L);
         //Then
         assertThat(commentRepository.findById(1L)).isEmpty();
+    }
+
+    @Test
+    void findUserByEmail() {
+        Optional<UserAccount> byEmail = userAccountRepository.findByEmail("testuser1@example.com");
     }
 
     @EnableJpaAuditing

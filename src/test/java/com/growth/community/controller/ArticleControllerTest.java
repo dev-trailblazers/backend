@@ -2,6 +2,7 @@ package com.growth.community.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growth.community.config.TestSecurityConfig;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.service.ArticleService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,16 +13,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("API - 게시글 컨트롤러")
+@Import(TestSecurityConfig.class)
 @WebMvcTest(ArticleController.class)
 class ArticleControllerTest {
     private final MockMvc mvc;
@@ -43,16 +49,21 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[POST] 게시글 생성 API - 정상 호출")
+//    @WithMockUser
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void postArticle_201() throws Exception {
         mvc.perform(post("/articles")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(fixedArticleDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .with(csrf())
+                )
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
 
     @DisplayName("[POST] 게시글 생성 API - 실패(잘못된 요청 데이터)")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
     void postArticle_dataIsInvalid_400(ArticleDto dto, String message) throws Exception {
@@ -77,6 +88,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[PUT] 게시글 수정 API - 정상 호출")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void putArticle_200() throws Exception {
         mvc.perform(put("/articles")
@@ -86,6 +98,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[PUT] 게시글 수정 API - 실패(잘못된 요청 데이터)")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
     void putArticle_articleIsInValid_400(ArticleDto dto, String message) throws Exception {
@@ -96,6 +109,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[DELETE] 게시글 삭제 API - 정상 호출")
+    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void deleteArticle_200() throws Exception {
         mvc.perform(delete("/articles/id/" + 1L))
