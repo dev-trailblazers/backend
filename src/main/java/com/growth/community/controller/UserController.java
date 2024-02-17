@@ -38,8 +38,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest){
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.email(), loginRequest.password());
+        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.email(), loginRequest.password());
         Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
