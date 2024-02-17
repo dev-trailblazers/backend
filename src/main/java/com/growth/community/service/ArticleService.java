@@ -1,9 +1,13 @@
 package com.growth.community.service;
 
-import com.growth.community.Exception.CanNotDeleteException;
+import com.growth.community.Exception.CannotDeleteException;
+import com.growth.community.Exception.ExceptionMessage;
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
+import com.growth.community.domain.article.dto.RequestArticleDto;
+import com.growth.community.domain.article.dto.ResponseArticleDtos;
+import com.growth.community.domain.user.UserAccount;
 import com.growth.community.repository.ArticleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -23,56 +26,51 @@ import java.util.NoSuchElementException;
 public class ArticleService {
     private final ArticleRepository articleRepository;
 
-    public void createArticle(ArticleDto articleDto){
-        articleRepository.save(ArticleDto.toEntity(articleDto));
+    public Article createArticle(RequestArticleDto dto, Long userId){
+        Article article = RequestArticleDto.toEntity(dto);
+        article.setUserAccount(new UserAccount(userId));
+
+        return articleRepository.save(article);
     }
 
-    public List<ArticleDto> searchArticlesByKeyword(String keyword, Pageable pageable) {
+    public ResponseArticleDtos searchArticlesByKeyword(String keyword, Pageable pageable) {
+        Long totalCount = articleRepository.countByKeyword(keyword);
         List<Article> articles = articleRepository.findAllByKeyword(keyword, pageable);
-        return articles.stream()
+
+        List<ArticleDto> articleDtos = articles.stream()
                 .map(article -> ArticleDto.fromEntity(article))
                 .toList();
+
+        return new ResponseArticleDtos(articleDtos, totalCount);
     }
 
     public ArticleWithCommentDto viewArticleWithComments(Long articleId) {
         return articleRepository.findById(articleId)
                 .map(ArticleWithCommentDto::fromEntity)
-                .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다 - articleId: " + articleId));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
     }
 
-    public void updateArticle(ArticleDto dto) {
-        if(dto.id() == null){
-            throw new IllegalArgumentException("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
-        }
-        try{
-            Article article = articleRepository.getReferenceById(dto.id());
+    public void updateArticle(RequestArticleDto dto, Long articleId, Long userId) {
+        Article article = articleRepository.findByIdAndUserAccount_Id(articleId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
 
-            // TODO: 로그인 구현 후 유저 아이디 검사 추가
-
-            article.setTitle(dto.title());
-            article.setContent(dto.content());
-            article.setHashtags(dto.hashtags());
-        } catch (EntityNotFoundException e){
-            log.warn("게시글 수정 실패(게시글을 찾을 수 없습니다.) - articleId: {} \n {}", dto.id(), e.getLocalizedMessage());
-        }
+        article.setTitle(dto.title());
+        article.setContent(dto.content());
+        article.setHashtags(dto.hashtags());
     }
 
-    public void deleteArticle(Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글 삭제 실패(게시글을 찾을 수 없습니다.) - articleId: " + articleId));
+    public void deleteArticle(Long articleId, Long userId) {
+        Article article = articleRepository.findByIdAndUserAccount_Id(articleId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
 
-        // TODO: 로그인 구현 후 유저 아이디 검사 추가
-        long commentCount = 0;
-
-        if (article.getComments() != null) {
-            commentCount = article.getComments()
+        long commentCount = article.getComments()
                     .stream()
                     .filter(comment -> !comment.isRemoved())
                     .count();
-        }
         if (commentCount > 0) {
-            throw new CanNotDeleteException("댓글이 달린 게시글은 삭제할 수 없습니다.");
+            throw new CannotDeleteException(ExceptionMessage.CANNOT_DELETE_ARTICLE);
         }
+
         articleRepository.deleteById(articleId);
     }
 

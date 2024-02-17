@@ -15,10 +15,15 @@ public class UserService {
 
 
     public void join(UserAccountDto dto) {
-        Optional<UserAccount> user = userAccountRepository.findByEmail(dto.email());
+        Optional<UserAccount> duplicatedEmailUser = userAccountRepository.findByEmail(dto.email());
+        Optional<UserAccount> duplicatedNicknameUser = userAccountRepository.findByNickname(dto.nickname());
 
-        if(user.isPresent())
+
+        if(duplicatedEmailUser.isPresent())
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+
+        if(duplicatedNicknameUser.isPresent())
+            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
 
         userAccountRepository.save(UserAccountDto.toEntity(dto));
     }

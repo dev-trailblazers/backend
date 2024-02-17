@@ -2,11 +2,13 @@ package com.growth.community.domain.article;
 
 import com.growth.community.domain.AuditingField;
 import com.growth.community.domain.comment.Comment;
+import com.growth.community.domain.user.UserAccount;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,9 +31,14 @@ public class Article extends AuditingField {
     @Setter
     private String hashtags;
 
+    @Setter
+    @JoinColumn(name = "user_id")
+    @ManyToOne(optional = false)
+    private UserAccount userAccount;
+
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
 
     public Article(String title, String content, String hashtags) {

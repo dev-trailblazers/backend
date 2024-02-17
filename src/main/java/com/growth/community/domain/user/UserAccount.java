@@ -1,6 +1,7 @@
 package com.growth.community.domain.user;
 
 import com.growth.community.domain.AuditingField;
+import com.growth.community.domain.user.dto.Principal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -19,10 +20,12 @@ public class UserAccount extends AuditingField {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
     private String email;
     private String password;
-    private String role;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Principal.RoleType role;
 
     private String name;
     private String nickname;
@@ -35,10 +38,14 @@ public class UserAccount extends AuditingField {
     private String position;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean locked;
+    private boolean deactivated;
 
     protected UserAccount() {
 
+    }
+
+    public UserAccount(Long id){
+        this.id = id;
     }
 
     @Override
