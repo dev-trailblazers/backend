@@ -2,6 +2,7 @@ package com.growth.community.domain.comment;
 
 import com.growth.community.domain.AuditingField;
 import com.growth.community.domain.article.Article;
+import com.growth.community.domain.user.UserAccount;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,11 @@ public class Comment extends AuditingField {
     @ManyToOne(optional = false)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    @Setter
+    @JoinColumn(name = "user_id")
+    @ManyToOne(optional = false)
+    private UserAccount userAccount;
 
     private Long parentCommentId;
 

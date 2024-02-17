@@ -3,6 +3,8 @@ package com.growth.community.service;
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
+import com.growth.community.domain.user.UserAccount;
+import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,7 @@ class ArticleServiceTest {
         //given
         given(articleRepository.save(any(Article.class))).willReturn(createArticle());
         //when
-        articleService.createArticle(createArticleDto());
+        articleService.createArticle(createArticleDto(), 1L);
         //then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -101,7 +103,7 @@ class ArticleServiceTest {
     @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
     @Test
     void updateArticle_missingId_exception() {
-        assertThatThrownBy(() -> articleService.updateArticle(createArticleDto()))
+        assertThatThrownBy(() -> articleService.updateArticle(createArticleDto(), 1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
     }
@@ -123,6 +125,6 @@ class ArticleServiceTest {
     }
 
     private Article createArticle() {
-        return new Article("title", "content", "#hashtag");
+        return new Article("title", "content", "#hashtag", new UserAccount(1L));
     }
 }

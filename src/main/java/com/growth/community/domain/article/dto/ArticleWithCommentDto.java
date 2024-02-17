@@ -17,6 +17,7 @@ public record ArticleWithCommentDto(
         String title,
         String content,
         String hashtags,
+        Long userId,
         Set<CommentDto> commentDtos,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
@@ -27,6 +28,7 @@ public record ArticleWithCommentDto(
                 .title(article.getTitle())
                 .content(article.getContent())
                 .hashtags(article.getHashtags())
+                .userId(article.getUserAccount().getId())
                 .commentDtos(Optional.ofNullable(article.getComments())
                         .orElseGet(Collections::emptySet)
                         .stream()

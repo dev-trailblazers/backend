@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
@@ -13,14 +14,17 @@ import java.util.Date;
 @Builder
 public record UserAccountDto(
         Long id,
+
         @Email(message = "이메일 형식이 아닙니다.")
         String email,
 
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,15}$")
         String password,
-        String role,
+        Principal.RoleType role,
 
+        @Length(min = 2, max = 20)
         String name,
+        @Length(min = 1, max = 16)      //varchar = 16 * 3 = 48
         String nickname,
         Date birth,
         @Pattern(regexp = "[mf]", message = "성별은 m 또는 f로만 구분할 수 있습니다.")

@@ -35,7 +35,7 @@ public class SecurityConfig {
                                 "/login"
                         ).permitAll()
                         .anyRequest().authenticated()
-                ).formLogin(login -> login.defaultSuccessUrl("/articles/keyword/world"))
+                ).formLogin(login -> login.defaultSuccessUrl("/"))
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .build();
     }

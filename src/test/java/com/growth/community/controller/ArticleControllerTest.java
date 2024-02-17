@@ -91,7 +91,7 @@ class ArticleControllerTest {
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void putArticle_200() throws Exception {
-        mvc.perform(put("/articles")
+        mvc.perform(put("/articles/1L")
                         .content(mapper.writeValueAsString(fixedArticleDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
