@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -37,10 +38,10 @@ public class SecurityConfig {
                                 HttpMethod.POST,
                                 "/login"
                         ).permitAll()
+                        .requestMatchers(CorsUtils::isPreFlightRequest)
+                        .permitAll()
                         .anyRequest().authenticated()
-                ).formLogin(login -> login
-                        .defaultSuccessUrl("/")
-                        .disable())
+                ).formLogin(login -> login.disable())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .build();
     }
