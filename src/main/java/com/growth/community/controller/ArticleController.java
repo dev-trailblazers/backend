@@ -8,7 +8,9 @@ import com.growth.community.domain.article.dto.ResponseArticleDtos;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,8 +36,8 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(article.getId());
     }
 
-    @GetMapping("/keyword")
-    public ResponseEntity<ResponseArticleDtos> getArticlesByKeyword(@RequestBody String keyword,
+    @GetMapping("/keyword/{keyword}")
+    public ResponseEntity<ResponseArticleDtos> getArticlesByKeyword(@PathVariable @Size(min = 1, max = 30, message = "검색 키워드는 1~30자 사이로 입력해주세요.") String keyword,
                                                                     @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(articleService.searchArticlesByKeyword(keyword, pageable));
