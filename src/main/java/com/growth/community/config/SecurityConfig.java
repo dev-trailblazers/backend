@@ -6,6 +6,9 @@ import com.growth.community.repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,6 +42,19 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .build();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        ProviderManager providerManager = new ProviderManager(authenticationProvider);
+        providerManager.setEraseCredentialsAfterAuthentication(false);
+
+        return providerManager;
+    }
+
 
     @Bean
     public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
