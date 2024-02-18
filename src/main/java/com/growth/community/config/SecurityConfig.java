@@ -1,5 +1,6 @@
 package com.growth.community.config;
 
+import com.growth.community.Exception.ExceptionMessage;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.UserAccountRepository;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -37,11 +40,13 @@ public class SecurityConfig {
                                 HttpMethod.POST,
                                 "/login"
                         ).permitAll()
+                        .requestMatchers(CorsUtils::isPreFlightRequest)
+                        .permitAll()
                         .anyRequest().authenticated()
-                ).formLogin(login -> login
-                        .defaultSuccessUrl("/")
-                        .disable())
-                .logout(logout -> logout.logoutSuccessUrl("/"))
+                ).formLogin(login -> login.disable())
+                .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true))
                 .build();
     }
 
@@ -63,7 +68,7 @@ public class SecurityConfig {
         return email -> userAccountRepository.findByEmail(email)
                 .map(UserAccountDto::fromEntity)
                 .map(Principal::fromDto)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - email:" + email));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(ExceptionMessage.USER_NOT_FOUND, email)));
     }
 
     @Bean

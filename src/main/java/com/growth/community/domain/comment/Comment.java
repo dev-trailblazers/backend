@@ -16,13 +16,13 @@ public class Comment extends AuditingField {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
 
     @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ManyToOne(optional = false)
     private UserAccount userAccount;
 
     private Long parentCommentId;
@@ -40,9 +40,10 @@ public class Comment extends AuditingField {
         this.content = content;
     }
 
-    public Comment(Article article, Long parentCommentId, String content) {
+    public Comment(Article article, Long parentCommentId, String content, UserAccount userAccount) {
         this.article = article;
         this.parentCommentId = parentCommentId;
         this.content = content;
+        this.userAccount = userAccount;
     }
 }

@@ -1,7 +1,7 @@
 package com.growth.community.domain.comment.dto;
 
-import com.growth.community.domain.article.Article;
 import com.growth.community.domain.comment.Comment;
+import com.growth.community.domain.validation.ValidationMessage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 public record CommentDto(
         Long id,
-        @NotBlank String content,
-        @NotNull Long articleId,
+        @NotNull(message = ValidationMessage.ARTICLE_ID_IS_REQUIRED) Long articleId,
         Long parentCommentId,
+        @NotBlank(message = ValidationMessage.CONTENT_IS_REQUIRED) String content,
         Long userId,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
@@ -21,11 +21,7 @@ public record CommentDto(
 ) {
 
     public static CommentDto of(Long id, Long articleId, String content){
-        return new CommentDto(id, content, articleId, null, null,null, null, null);
-    }
-
-    public static CommentDto of(Long articleId, String content){
-        return new CommentDto(null, content, articleId, null, null, null, null, null);
+        return new CommentDto(id, articleId, null, content, null,null, null, null);
     }
 
     public static CommentDto fromEntity(Comment comment){
@@ -39,9 +35,5 @@ public record CommentDto(
                 .modifiedAt(comment.getModifiedAt())
                 .modifiedBy(comment.getModifiedBy())
                 .build();
-    }
-
-    public static Comment toEntity(Article article, Long parentCommentId, String content){
-        return new Comment(article, parentCommentId, content);
     }
 }

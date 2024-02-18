@@ -1,10 +1,12 @@
 package com.growth.community.controller;
 
 import com.growth.community.domain.article.Article;
+import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.domain.article.dto.RequestArticleDto;
-import com.growth.community.domain.article.dto.ResponseArticleDtos;
+import com.growth.community.domain.article.dto.ArticleDtos;
 import com.growth.community.domain.user.dto.Principal;
+import com.growth.community.domain.validation.ValidationMessage;
 import com.growth.community.service.ArticleService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -32,8 +34,8 @@ public class ArticleController {
     }
 
     @GetMapping("/keyword/{keyword}")
-    public ResponseEntity<ResponseArticleDtos> getArticlesByKeyword(@PathVariable @Size(min = 1, max = 30, message = "검색 키워드는 1~30자 사이로 입력해주세요.") String keyword,
-                                                                    @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ArticleDtos> getArticlesByKeyword(@PathVariable @Size(min = 1, max = 30, message = ValidationMessage.KEYWORD_LENGTH) String keyword,
+                                                            @PageableDefault(sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok().body(articleService.searchArticlesByKeyword(keyword, pageable));
     }
 
@@ -42,11 +44,10 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.viewArticleWithComments(articleId));
     }
 
-    @PutMapping("/id/{articleId}")
-    public ResponseEntity<Void> putArticle(@RequestBody @Valid RequestArticleDto dto,
-                                           @PathVariable Long articleId,
+    @PutMapping("/id")
+    public ResponseEntity<Void> putArticle(@RequestBody @Valid ArticleDto dto,
                                            @AuthenticationPrincipal Principal principal) {
-        articleService.updateArticle(dto, articleId, principal.id());
+        articleService.updateArticle(dto, principal.id());
         return ResponseEntity.ok().build();
     }
 

@@ -1,10 +1,10 @@
 package com.growth.community.controller;
 
+import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.domain.comment.dto.RequestCommentDto;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.service.CommentService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,11 +25,10 @@ public class CommentController {
         return ResponseEntity.created(URI.create("/articles/id/" + dto.articleId())).build();
     }
 
-    @PutMapping("/id/{commentId}")
-    public ResponseEntity<Void> putComment(@PathVariable Long commentId,
-                                           @RequestBody @NotBlank String content,
+    @PutMapping("/")
+    public ResponseEntity<Void> putComment(@RequestBody CommentDto dto,
                                            @AuthenticationPrincipal Principal principal){
-        commentService.updateComment(commentId, content, principal.id());
+        commentService.updateComment(dto, principal.id());
         return ResponseEntity.ok().build();
     }
 

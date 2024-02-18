@@ -1,5 +1,7 @@
 package com.growth.community.service;
 
+import com.growth.community.Exception.AlreadyExistsException;
+import com.growth.community.Exception.ExceptionMessage;
 import com.growth.community.domain.user.UserAccount;
 import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.UserAccountRepository;
@@ -18,12 +20,10 @@ public class UserService {
         Optional<UserAccount> duplicatedEmailUser = userAccountRepository.findByEmail(dto.email());
         Optional<UserAccount> duplicatedNicknameUser = userAccountRepository.findByNickname(dto.nickname());
 
-
         if(duplicatedEmailUser.isPresent())
-            throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
-
+            throw new AlreadyExistsException(dto.email(), ExceptionMessage.EMAIL_IS_EXISTING);
         if(duplicatedNicknameUser.isPresent())
-            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+            throw new AlreadyExistsException(dto.nickname(), ExceptionMessage.NICKNAME_IS_EXISTING);
 
         userAccountRepository.save(UserAccountDto.toEntity(dto));
     }

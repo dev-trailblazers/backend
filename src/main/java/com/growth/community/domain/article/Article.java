@@ -32,19 +32,20 @@ public class Article extends AuditingField {
     private String hashtags;
 
     @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ManyToOne(optional = false)
     private UserAccount userAccount;
 
     @OrderBy("id")
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.REMOVE)
     private Set<Comment> comments = new HashSet<>();
 
 
-    public Article(String title, String content, String hashtags) {
+    public Article(String title, String content, String hashtags, UserAccount userAccount) {
         this.title = Objects.requireNonNull(title);
         this.content = Objects.requireNonNull(content);
         this.hashtags = hashtags;
+        this.userAccount = userAccount;
     }
 
     @Override
