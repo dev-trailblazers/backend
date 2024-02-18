@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HashTags {
-    String message() default "Invalid hash tags";
+    String message() default ValidationMessage.HASHTAGS_LENGTH;
 
     Class<?>[] groups() default {};
 

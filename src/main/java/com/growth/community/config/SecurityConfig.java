@@ -1,5 +1,6 @@
 package com.growth.community.config;
 
+import com.growth.community.Exception.ExceptionMessage;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.UserAccountRepository;
@@ -64,7 +65,7 @@ public class SecurityConfig {
         return email -> userAccountRepository.findByEmail(email)
                 .map(UserAccountDto::fromEntity)
                 .map(Principal::fromDto)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - email:" + email));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(ExceptionMessage.USER_NOT_FOUND, email)));
     }
 
     @Bean

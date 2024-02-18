@@ -3,7 +3,6 @@ package com.growth.community.domain.user;
 import com.growth.community.domain.AuditingField;
 import com.growth.community.domain.user.dto.Principal;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,9 @@ public class UserAccount extends AuditingField {
 
     private String region;
     private int career;
-    private String position;
+
+    @Enumerated(EnumType.STRING)
+    private Position position;
 
     @Column(columnDefinition = "boolean default false")
     private boolean deactivated;

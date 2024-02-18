@@ -5,7 +5,7 @@ public class CannotDeleteException extends RuntimeException{
         super();
     }
 
-    public CannotDeleteException(String s){
-        super(s);
+    public CannotDeleteException(String message) {
+        super(message);
     }
 }

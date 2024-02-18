@@ -1,6 +1,8 @@
 package com.growth.community.domain.user.dto;
 
+import com.growth.community.domain.user.Position;
 import com.growth.community.domain.user.UserAccount;
+import com.growth.community.domain.validation.ValidationMessage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,27 +17,25 @@ import java.util.Date;
 public record UserAccountDto(
         Long id,
 
-        @Email(message = "이메일 형식이 아닙니다.")
-        String email,
+        @Email(message = ValidationMessage.EMAIL_FORMAT)
+        String email,   //todo: 본인 인증을 통한 인증
 
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,15}$")
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,16}$", message = ValidationMessage.INVALID_PASSWORD)
         String password,
         Principal.RoleType role,
-
-        @Length(min = 2, max = 20)
         String name,
-        @Length(min = 1, max = 16)      //varchar = 16 * 3 = 48
+        @Length(min = 1, max = 16, message = ValidationMessage.NICKNAME_LENGTH)
         String nickname,
         Date birth,
-        @Pattern(regexp = "[mf]", message = "성별은 m 또는 f로만 구분할 수 있습니다.")
+        @Pattern(regexp = "[mf]", message = ValidationMessage.INVALID_GENDER)
         char gender,
-        @Pattern(regexp = "^[0-9]{11}", message = "전화번호는 11자리 입니다.")
-        String phoneNumber,
+        @Pattern(regexp = "^[0-9]{11}", message = ValidationMessage.PHONE_NUMBER_FORMAT)
+        String phoneNumber, //todo: 본인 인증을 통한 인증
 
         String region,
         @Min(0) @Max(40)
         int career,
-        String position
+        Position position
 ) {
 
         public static UserAccountDto of(Long id, String email, String password, String nickname) {

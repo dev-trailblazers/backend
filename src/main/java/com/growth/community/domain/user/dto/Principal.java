@@ -1,5 +1,6 @@
 package com.growth.community.domain.user.dto;
 
+import com.growth.community.domain.user.UserAccount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
