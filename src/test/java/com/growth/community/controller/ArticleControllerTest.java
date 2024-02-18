@@ -3,8 +3,12 @@ package com.growth.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growth.community.config.TestSecurityConfig;
+import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.RequestArticleDto;
+import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.service.ArticleService;
+import com.growth.community.util.TestObjectFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,15 +19,24 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("API - 게시글 컨트롤러")
@@ -36,12 +49,6 @@ class ArticleControllerTest {
     @MockBean
     private ArticleService articleService;
 
-    private ArticleDto fixedArticleDto = ArticleDto.builder()
-            .title("제목")
-            .content("내용")
-            .hashtags("#해시태그")
-            .build();
-
 
     public ArticleControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
         this.mvc = mvc;
@@ -49,14 +56,16 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[POST] 게시글 생성 API - 정상 호출")
-//    @WithMockUser
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void postArticle_201() throws Exception {
+        //Given
+        given(articleService.createArticle(any(RequestArticleDto.class), anyLong()))
+                .willReturn(TestObjectFactory.createArticle());
+        //When & Then
         mvc.perform(post("/articles")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(fixedArticleDto))
-                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(TestObjectFactory.createRequestArticleDto()))
                 )
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -91,8 +100,8 @@ class ArticleControllerTest {
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void putArticle_200() throws Exception {
-        mvc.perform(put("/articles/1L")
-                        .content(mapper.writeValueAsString(fixedArticleDto))
+        mvc.perform(put("/articles")
+                        .content(mapper.writeValueAsString(TestObjectFactory.createArticleDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

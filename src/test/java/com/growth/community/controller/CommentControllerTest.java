@@ -2,7 +2,7 @@ package com.growth.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growth.community.config.TestSecurityConfig;
-import com.growth.community.domain.comment.dto.CommentDto;
+import com.growth.community.domain.comment.dto.RequestCommentDto;
 import com.growth.community.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class CommentControllerTest {
     @Test
     void postComment_dataIsValid_201() throws Exception {
         mvc.perform(post("/comments")
-                        .content(mapper.writeValueAsString(createCommentDto()))
+                        .content(mapper.writeValueAsString(createRequestCommentDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -52,9 +52,9 @@ public class CommentControllerTest {
 
     @DisplayName("[POST] 댓글 저장 API - 실패(데이터 누락)")
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    @MethodSource("invalidCommentDto")
+    @MethodSource("invalidRequestCommentDto")
     @ParameterizedTest(name = "{index}: {1}")
-    void postComment_missingData_400(CommentDto dto, String message) throws Exception {
+    void postComment_missingData_400(RequestCommentDto dto, String message) throws Exception {
         mvc.perform(post("/comments")
                         .content(mapper.writeValueAsString(dto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -66,9 +66,9 @@ public class CommentControllerTest {
     @DisplayName("[PUT] 댓글 수정 API - 정상 호출")
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    void updateComment_dataIsValid_200() throws Exception {
+    void putComment_dataIsValid_200() throws Exception {
         mvc.perform(put("/comments")
-                        .content(mapper.writeValueAsString(createCommentDto()))
+                        .content(mapper.writeValueAsString(createRequestCommentDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -76,9 +76,9 @@ public class CommentControllerTest {
 
     @DisplayName("[PUT] 댓글 수정 API - 실패(데이터 누락)")
     @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    @MethodSource("invalidCommentDto")
+    @MethodSource("invalidRequestCommentDto")
     @ParameterizedTest(name = "{index}: {1}")
-    void updateComment_dataIsInvalid_400(CommentDto dto, String message) throws Exception {
+    void putComment_dataIsInvalid_400(RequestCommentDto dto, String message) throws Exception {
         mvc.perform(put("/comments")
                         .content(mapper.writeValueAsString(dto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -96,15 +96,15 @@ public class CommentControllerTest {
                 .andDo(print());
     }
 
-    static Stream<Arguments> invalidCommentDto(){
+    static Stream<Arguments> invalidRequestCommentDto(){
         return Stream.of(
-                Arguments.of(CommentDto.of(null, "댓글"), "게시글 아이디 누락"),
-                Arguments.of(CommentDto.of(1L, null), "댓글 내용 누락"),
-                Arguments.of(CommentDto.of(1L, ""), "빈 댓글")
+                Arguments.of(RequestCommentDto.of(null, null,"댓글"), "게시글 아이디 누락"),
+                Arguments.of(RequestCommentDto.of(1L, null, null), "댓글 내용 누락"),
+                Arguments.of(RequestCommentDto.of(1L, null, ""), "빈 댓글")
         );
     }
 
-    private CommentDto createCommentDto(){
-        return CommentDto.of(1L, "댓글 내용");
+    private RequestCommentDto createRequestCommentDto(){
+        return RequestCommentDto.of(1L, null, "댓글 내용");
     }
 }

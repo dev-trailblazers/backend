@@ -26,7 +26,7 @@ import java.net.URI;
 public class ArticleController {
     private final ArticleService articleService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Void> postArticle(@RequestBody @Valid RequestArticleDto dto,
                                             @AuthenticationPrincipal Principal principal) {
         Article article = articleService.createArticle(dto, principal.id());
@@ -44,7 +44,7 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.viewArticleWithComments(articleId));
     }
 
-    @PutMapping("/id")
+    @PutMapping
     public ResponseEntity<Void> putArticle(@RequestBody @Valid ArticleDto dto,
                                            @AuthenticationPrincipal Principal principal) {
         articleService.updateArticle(dto, principal.id());

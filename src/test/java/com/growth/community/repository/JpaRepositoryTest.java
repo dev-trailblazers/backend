@@ -43,7 +43,8 @@ public class JpaRepositoryTest {
     void saveArticle() {
         //Given
         long preCount = articleRepository.count();
-        Article article = new Article("제목", "본문 내용", "#해시태그");
+        UserAccount userAccount = userAccountRepository.getReferenceById(1L);
+        Article article = new Article("제목", "본문 내용", "#해시태그", userAccount);
         //When
         articleRepository.save(article);
         //Then

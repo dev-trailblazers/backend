@@ -25,8 +25,8 @@ public class CommentController {
         return ResponseEntity.created(URI.create("/articles/id/" + dto.articleId())).build();
     }
 
-    @PutMapping("/")
-    public ResponseEntity<Void> putComment(@RequestBody CommentDto dto,
+    @PutMapping
+    public ResponseEntity<Void> putComment(@RequestBody @Valid CommentDto dto,
                                            @AuthenticationPrincipal Principal principal){
         commentService.updateComment(dto, principal.id());
         return ResponseEntity.ok().build();
