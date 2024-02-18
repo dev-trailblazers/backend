@@ -2,10 +2,12 @@ package com.growth.community.service;
 
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
+import com.growth.community.domain.article.dto.ArticleDtos;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
-import com.growth.community.domain.user.UserAccount;
-import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.ArticleRepository;
+import com.growth.community.repository.UserAccountRepository;
+import com.growth.community.util.TestObjectFactory;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,17 +31,18 @@ import static org.mockito.BDDMockito.then;
 class ArticleServiceTest {
     @InjectMocks
     ArticleService articleService;
-    @Mock
-    ArticleRepository articleRepository;
+    @Mock ArticleRepository articleRepository;
+    @Mock UserAccountRepository userAccountRepository;
 
 
     @DisplayName("게시글 정보를 입력하면 게시글을 저장한다 - 성공")
     @Test
     void creatArticle_success() {
         //given
-        given(articleRepository.save(any(Article.class))).willReturn(createArticle());
+        given(userAccountRepository.getReferenceById(anyLong())).willReturn(TestObjectFactory.createUserAccount());
+        given(articleRepository.save(any(Article.class))).willReturn(TestObjectFactory.createArticle());
         //when
-        articleService.createArticle(createArticleDto(), 1L);
+        articleService.createArticle(TestObjectFactory.createRequestArticleDto(), 1L);
         //then
         then(articleRepository).should().save(any(Article.class));
     }
@@ -49,14 +52,14 @@ class ArticleServiceTest {
     void searchArticlesByKeyword_success() {
         //given
         List<Article> articles = List.of(
-                new Article("제목1", "내용1", "#해시태그"),
-                new Article("제목2", "내용2", "#해시태그")
+                new Article("제목1", "내용1", "#해시태그", TestObjectFactory.createUserAccount()),
+                new Article("제목2", "내용2", "#해시태그", TestObjectFactory.createUserAccount())
         );
         given(articleRepository.findAllByKeyword(anyString(), any(Pageable.class))).willReturn(articles);
         //when
-        List<ArticleDto> articleDtos = articleService.searchArticlesByKeyword("해시태그", PageRequest.of(0,10));
+        ArticleDtos articleDtos = articleService.searchArticlesByKeyword("해시태그", PageRequest.of(0,10));
         //then
-        assertThat(articleDtos.size()).isEqualTo(2);
+        assertThat(articleDtos.dtos().size()).isEqualTo(2);
         then(articleRepository).should().findAllByKeyword(anyString(), any(Pageable.class));
     }
 
@@ -66,7 +69,7 @@ class ArticleServiceTest {
     void viewArticleWithComments_success() {
         //Given
         Long articleId = 1L;
-        Article article = createArticle();
+        Article article = TestObjectFactory.createArticle();
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
         //When
         ArticleWithCommentDto dto = articleService.viewArticleWithComments(articleId);
@@ -82,49 +85,35 @@ class ArticleServiceTest {
     @Test
     void updateArticle_success() {
         //Given
-        ArticleDto dto = ArticleDto.builder()
-                .id(1L)
-                .title("수정된 제목")
-                .content("수정된 내용")
-                .hashtags("#수정된 해시태그")
-                .build();
-        Article article = createArticle();
-        given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        ArticleDto dto = TestObjectFactory.createArticleDto(1L);
+        Article article = TestObjectFactory.createArticle();
+        given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
+                .willReturn(Optional.of(article));
         //When
-        articleService.updateArticle(dto);
+        articleService.updateArticle(dto, 1L);
         //Then
         assertThat(article)
                 .hasFieldOrPropertyWithValue("title", dto.title())
                 .hasFieldOrPropertyWithValue("content", dto.content())
                 .hasFieldOrPropertyWithValue("hashtags", dto.hashtags());
-        then(articleRepository).should().getReferenceById(dto.id());
+        then(articleRepository).should().findByIdAndUserAccount_Id(dto.id(), 1L);
     }
 
     @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
     @Test
     void updateArticle_missingId_exception() {
-        assertThatThrownBy(() -> articleService.updateArticle(createArticleDto(), 1L))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("게시글을 변경하기 위해서는 해당 게시글의 아이디가 필요합니다.");
+        assertThatThrownBy(() -> articleService.updateArticle(TestObjectFactory.createArticleDto(), 1L))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("게시글 아이디에 해당하는 게시글을 삭제한다.")
     @Test
     void deleteArticle_success() {
         //Given & When
-        given(articleRepository.findById(anyLong())).willReturn(Optional.of(createArticle()));
-        articleService.deleteArticle(1L);
+        given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
+                .willReturn(Optional.of(TestObjectFactory.createArticle()));
+        articleService.deleteArticle(1L, 1L);
         //Then
         then(articleRepository).should().deleteById(anyLong());
-    }
-
-    //게시글이 없을 때 예외 테스트
-
-    private ArticleDto createArticleDto() {
-        return ArticleDto.of("title", "content", "#hashtag");
-    }
-
-    private Article createArticle() {
-        return new Article("title", "content", "#hashtag", new UserAccount(1L));
     }
 }

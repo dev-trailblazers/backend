@@ -28,7 +28,6 @@ public class CommentService {
 
     public void createComment(RequestCommentDto dto, Long userId) {
         UserAccount userAccount = userAccountRepository.getReferenceById(userId);
-
         Article article = articleRepository.findById(dto.articleId()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 게시글 입니다.")
         );

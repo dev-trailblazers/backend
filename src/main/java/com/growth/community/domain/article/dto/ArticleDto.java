@@ -25,6 +25,10 @@ public record ArticleDto(
         return new ArticleDto(null, title, content, hashTags, null,null, null, null);
     }
 
+    public static ArticleDto of(Long id, String title, String content, String hashTags){
+        return new ArticleDto(id, title, content, hashTags, null,null, null, null);
+    }
+
     public static ArticleDto fromEntity(Article article) {
         return ArticleDto.builder()
                 .id(article.getId())

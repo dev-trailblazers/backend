@@ -1,7 +1,9 @@
 package com.growth.community.config;
 
 
+import com.growth.community.domain.user.Position;
 import com.growth.community.domain.user.UserAccount;
+import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.UserAccountRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -20,20 +22,22 @@ public class TestSecurityConfig {
 
     @BeforeTestMethod
     public void securitySetUp() {
-        given(userAccountRepository.findByEmail(anyString())).willReturn(Optional.of(new UserAccount(
-                1L,
-                "testuser1@example.com",
-                "password",
-                "ROLE_USER",
-                "CHAN_YEONG",
-                "CHANY",
-                new Date(),
-                'M',
-                "01023953042",
-                "영주",
-                1,
-                "백엔드",
-                false
-        )));
+        given(userAccountRepository.findByEmail(anyString())).willReturn(
+                Optional.of(new UserAccount(
+                        1L,
+                        "testuser1@example.com",
+                        "password",
+                        Principal.RoleType.USER,
+                        "CHAN_YEONG",
+                        "CHANY",
+                        new Date(),
+                        'M',
+                        "01023953042",
+                        "영주",
+                        1,
+                        Position.WEB_BACKEND,
+                        false
+                ))
+        );
     }
 }

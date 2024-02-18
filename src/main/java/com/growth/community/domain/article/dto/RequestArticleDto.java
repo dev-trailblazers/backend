@@ -21,4 +21,8 @@ public record RequestArticleDto(
                 userAccount
         );
     }
+
+    public static RequestArticleDto of(String title, String content, String hashtags){
+        return new RequestArticleDto(title, content, hashtags);
+    }
 }
