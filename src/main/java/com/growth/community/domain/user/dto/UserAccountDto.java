@@ -2,6 +2,7 @@ package com.growth.community.domain.user.dto;
 
 import com.growth.community.domain.user.Position;
 import com.growth.community.domain.user.UserAccount;
+import com.growth.community.domain.validation.Gender;
 import com.growth.community.domain.validation.ValidationMessage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
@@ -27,14 +28,12 @@ public record UserAccountDto(
         @Length(min = 1, max = 16, message = ValidationMessage.NICKNAME_LENGTH)
         String nickname,
         Date birth,
-        @Pattern(regexp = "[mf]", message = ValidationMessage.INVALID_GENDER)
-        char gender,
+        @Gender char gender,
         @Pattern(regexp = "^[0-9]{11}", message = ValidationMessage.PHONE_NUMBER_FORMAT)
         String phoneNumber, //todo: 본인 인증을 통한 인증
 
         String region,
-        @Min(0) @Max(40)
-        int career,
+        @Min(0) @Max(40) int career,
         Position position
 ) {
 
