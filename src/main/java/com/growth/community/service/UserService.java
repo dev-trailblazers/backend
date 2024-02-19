@@ -2,7 +2,6 @@ package com.growth.community.service;
 
 import com.growth.community.Exception.AlreadyExistsException;
 import com.growth.community.Exception.ExceptionMessage;
-import com.growth.community.domain.user.UserAccount;
 import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +16,9 @@ public class UserService {
 
 
     public void join(UserAccountDto dto) {
-        Optional<UserAccount> duplicatedEmailUser = userAccountRepository.findByEmail(dto.email());
-        Optional<UserAccount> duplicatedNicknameUser = userAccountRepository.findByNickname(dto.nickname());
-
-        if(duplicatedEmailUser.isPresent())
+        if(userAccountRepository.existsByEmail(dto.email()))
             throw new AlreadyExistsException(dto.email(), ExceptionMessage.EMAIL_IS_EXISTING);
-        if(duplicatedNicknameUser.isPresent())
+        if(userAccountRepository.existsByNickname(dto.nickname()))
             throw new AlreadyExistsException(dto.nickname(), ExceptionMessage.NICKNAME_IS_EXISTING);
 
         userAccountRepository.save(UserAccountDto.toEntity(dto));

@@ -41,7 +41,7 @@ public class UserAccount extends AuditingField {
     @Column(columnDefinition = "boolean default false")
     private boolean deactivated;
 
-    protected UserAccount() {
+    public UserAccount() {
 
     }
 
