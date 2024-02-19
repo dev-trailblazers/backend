@@ -1,5 +1,6 @@
 package com.growth.community.service;
 
+import com.growth.community.Exception.CannotDeleteException;
 import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleDtos;
@@ -29,8 +30,7 @@ import static org.mockito.BDDMockito.then;
 @DisplayName("비즈니스 로직 - 게시글")
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
-    @InjectMocks
-    ArticleService articleService;
+    @InjectMocks ArticleService articleService;
     @Mock ArticleRepository articleRepository;
     @Mock UserAccountRepository userAccountRepository;
 
@@ -47,7 +47,7 @@ class ArticleServiceTest {
         then(articleRepository).should().save(any(Article.class));
     }
 
-    @DisplayName("키워드를 입력하면 제목 또는 해시태그에 키워드가 포함된 게시글 리스트를 반환한다.")
+    @DisplayName("키워드를 입력하면 제목 또는 해시태그에 키워드가 포함된 게시글 리스트를 반환한다 - 성공")
     @Test
     void searchArticlesByKeyword_success() {
         //given
@@ -64,7 +64,7 @@ class ArticleServiceTest {
     }
 
 
-    @DisplayName("게시글 아이디에 해당하는 게시글과 댓글을 반환한다.")
+    @DisplayName("게시글 아이디에 해당하는 게시글과 댓글을 반환한다 - 성공")
     @Test
     void viewArticleWithComments_success() {
         //Given
@@ -81,7 +81,7 @@ class ArticleServiceTest {
         then(articleRepository).should().findById(articleId);
     }
 
-    @DisplayName("새로운 게시글로 수정한다.")
+    @DisplayName("새로운 게시글로 수정한다 - 성공")
     @Test
     void updateArticle_success() {
         //Given
@@ -99,21 +99,48 @@ class ArticleServiceTest {
         then(articleRepository).should().findByIdAndUserAccount_Id(dto.id(), 1L);
     }
 
-    @DisplayName("게시글 수정 시 아이디가 누락되면 예외가 발생한다.")
+    @DisplayName("본인이 작성하지 않은 게시글 수정 시 예외가 발생한다.")
     @Test
-    void updateArticle_missingId_exception() {
-        assertThatThrownBy(() -> articleService.updateArticle(TestObjectFactory.createArticleDto(), 1L))
+    void updateArticle_NotOwnArticle_exception() {
+        //Given
+        given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+        //When & Then
+        assertThatThrownBy(() -> articleService.updateArticle(TestObjectFactory.createArticleDto(1L), 1L))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
-    @DisplayName("게시글 아이디에 해당하는 게시글을 삭제한다.")
+    @DisplayName("게시글 아이디에 해당하는 게시글을 삭제한다 - 성공")
     @Test
     void deleteArticle_success() {
-        //Given & When
+        //Given
         given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
                 .willReturn(Optional.of(TestObjectFactory.createArticle()));
+        //When
         articleService.deleteArticle(1L, 1L);
         //Then
         then(articleRepository).should().deleteById(anyLong());
+    }
+
+    @DisplayName("댓글이 달린 게시글을 삭제하면 예외가 발생한다.")
+    @Test
+    void deleteArticle_includeComments_exception() {
+        //Given
+        given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
+                .willReturn(Optional.of(TestObjectFactory.createArticleWithComments()));
+        //When & Then
+        assertThatThrownBy(() -> articleService.deleteArticle(1L, 1L))
+                .isInstanceOf(CannotDeleteException.class);
+    }
+
+    @DisplayName("본인이 작성하지 않은 게시글 삭제 시 예외가 발생한다.")
+    @Test
+    void deleteArticle_NotOwnArticle_exception() {
+        //Given
+        given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+        //When & Then
+        assertThatThrownBy(() -> articleService.deleteArticle(1L, 1L))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }

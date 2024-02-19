@@ -70,7 +70,7 @@ public class JpaRepositoryTest {
     void findArticleById() {
         //When
         Article article = articleRepository.findById(1L).get();
-        Set<Comment> comments = article.getComments();
+        List<Comment> comments = article.getComments();
         //Then
         assertThat(comments).isNotNull();
         assertThat(article).isNotNull();

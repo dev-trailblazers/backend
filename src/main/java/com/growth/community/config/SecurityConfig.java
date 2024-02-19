@@ -34,11 +34,10 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/articles/**",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-                                , "/join"
                         ).permitAll()
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/login"
+                                "/join", "/login"
                         ).permitAll()
                         .requestMatchers(CorsUtils::isPreFlightRequest)
                         .permitAll()
