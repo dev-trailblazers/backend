@@ -30,7 +30,7 @@ public record ArticleWithCommentDto(
                 .hashtags(article.getHashtags())
                 .userId(article.getUserAccount().getId())
                 .commentDtos(Optional.ofNullable(article.getComments())
-                        .orElseGet(Collections::emptySet)
+                        .orElseGet(Collections::emptyList)
                         .stream()
                         .filter(comment -> !comment.isRemoved())
                         .map(CommentDto::fromEntity)

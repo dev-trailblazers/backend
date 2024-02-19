@@ -24,6 +24,10 @@ public class TestObjectFactory {
         return new Article("title", "content", "#hashtag", createUserAccount());
     }
 
+    public static Article createArticleWithComments() {
+        return new Article("title", "content", "#hashtag", createUserAccount(), List.of(createComment()));
+    }
+
     public static Comment createComment(){
         return new Comment(
                 new Article("title", "content", "#hashtag", createUserAccount()),

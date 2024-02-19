@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -38,7 +36,7 @@ public class Article extends AuditingField {
 
     @OrderBy("id")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.REMOVE)
-    private Set<Comment> comments = new HashSet<>();
+    private List<Comment> comments = new ArrayList<>();
 
 
     public Article(String title, String content, String hashtags, UserAccount userAccount) {
@@ -46,6 +44,11 @@ public class Article extends AuditingField {
         this.content = Objects.requireNonNull(content);
         this.hashtags = hashtags;
         this.userAccount = userAccount;
+    }
+
+    public Article(String title, String content, String hashtags, UserAccount userAccount, List comments) {
+        this(title, content, hashtags, userAccount);
+        this.comments = comments;
     }
 
     @Override
