@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class UserAccount extends AuditingField {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(updatable = false)
     private String email;
     private String password;
 
@@ -27,16 +29,16 @@ public class UserAccount extends AuditingField {
     private Principal.RoleType role;
 
     private String name;
-    private String nickname;
+    @Setter private String nickname;
     private Date birth;
     private char gender;
     private String phoneNumber;
 
-    private String region;
-    private int career;
+    @Setter private String region;
+    @Setter private int career;
 
     @Enumerated(EnumType.STRING)
-    private Position position;
+    @Setter private Position position;
 
     @Column(columnDefinition = "boolean default false")
     private boolean deactivated;
