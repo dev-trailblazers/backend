@@ -2,19 +2,13 @@ package com.growth.community.controller;
 
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.domain.user.dto.UserAccountDto;
+import com.growth.community.domain.user.dto.UserUpdateDto;
 import com.growth.community.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -22,7 +16,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
     @GetMapping("/")
@@ -36,13 +29,17 @@ public class UserController {
         return ResponseEntity.created(URI.create("/")).build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest){
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.email(), loginRequest.password());
-        Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+    @PostMapping("/user/info")
+    public ResponseEntity<UserAccountDto> getUserInfo(@AuthenticationPrincipal Principal principal){
+        UserAccountDto dto = userService.inquiryUser(principal.getUserId());
+        return ResponseEntity.ok().body(dto);
+    }
 
-        SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
-        return ResponseEntity.ok().build();
+    @PutMapping("/user/update")
+    public ResponseEntity<UserAccountDto> putUser(@RequestBody UserUpdateDto dto,
+                                                  @AuthenticationPrincipal Principal principal){
+        UserAccountDto userAccountDto = userService.updateUser(dto, principal.id());
+        return ResponseEntity.ok().body(userAccountDto);
     }
 
     public record LoginRequest(String email, String password){}
