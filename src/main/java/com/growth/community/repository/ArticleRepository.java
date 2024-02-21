@@ -20,4 +20,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Optional<Article> findByIdAndUserAccount_Id(Long articleId, Long userId);
 
+    List<Article> findAllByUserAccount_Id(Long userId, Pageable pageable);
+    @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.comments c JOIN c.userAccount u WHERE u.id = :userId")
+    List<Article> findAllByCommentAndUserId(Long userId, Pageable pageable);
 }

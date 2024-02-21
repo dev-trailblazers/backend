@@ -47,7 +47,7 @@ public class ArticleService {
         return new ArticleDtos(articleDtos, totalCount);
     }
 
-    public ArticleWithCommentDto viewArticleWithComments(Long articleId) {
+    public ArticleWithCommentDto inquiryArticleWithComments(Long articleId) {
         return articleRepository.findById(articleId)
                 .map(ArticleWithCommentDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
