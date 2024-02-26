@@ -136,7 +136,7 @@ public class JpaRepositoryTest {
 
     @Test
     void findUserByEmail() {
-        Optional<UserAccount> byEmail = userAccountRepository.findByEmail("testuser1@example.com");
+        Optional<UserAccount> byEmail = userAccountRepository.findByUsername("testuser1@example.com");
     }
 
     @EnableJpaAuditing

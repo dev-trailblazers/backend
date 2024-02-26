@@ -51,7 +51,7 @@ class UserServiceTest {
     @Test
     void join_duplicateEmail_exception() {
         //Given
-        given(userAccountRepository.existsByEmail(anyString())).willReturn(true);
+        given(userAccountRepository.existsByUsername(anyString())).willReturn(true);
         UserAccountDto userAccountDto = TestObjectFactory.createUserAccountDto();
         //When & Then
         assertThatThrownBy(() -> userService.join(userAccountDto))

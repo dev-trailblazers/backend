@@ -21,21 +21,21 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Void> postComment(@RequestBody @Valid RequestCommentDto dto,
                                             @AuthenticationPrincipal Principal principal){
-        commentService.createComment(dto, principal.id());
+        commentService.createComment(dto, principal.getId());
         return ResponseEntity.created(URI.create("/articles/id/" + dto.articleId())).build();
     }
 
     @PutMapping
     public ResponseEntity<Void> putComment(@RequestBody @Valid CommentDto dto,
                                            @AuthenticationPrincipal Principal principal){
-        commentService.updateComment(dto, principal.id());
+        commentService.updateComment(dto, principal.getId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/id/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
                                               @AuthenticationPrincipal Principal principal){
-        commentService.deleteComment(commentId, principal.id());
+        commentService.deleteComment(commentId, principal.getId());
         return ResponseEntity.ok().build();
     }
 

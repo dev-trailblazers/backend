@@ -1,72 +1,50 @@
 package com.growth.community.domain.user.dto;
 
+import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.UserAccount;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record Principal(
-        Long id,
-        String email,
-        String password,
-        String nickname,
-        Collection<? extends GrantedAuthority> authorities
-) implements UserDetails {
-    public static Principal of(Long userId, String password, String email, String nickname) {
-        Set<RoleType> roleTypes = Set.of(RoleType.USER);
 
+public class Principal extends User {
+    @Getter
+    private final Long id;
+
+    public Principal(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
+        this.id = id;
+    }
+
+//    public static Principal of(Long id, String username, String password, RoleType role) {
+//        return new Principal(
+//                id,
+//                username,
+//                password,
+//                createAuthoritiesFromRoles(Set.of(role))
+//        );
+//    }
+
+    public static Principal fromEntity(UserAccount userAccount) {
         return new Principal(
-                userId,
-                email,
-                password,
-                nickname,
-                roleTypes.stream()
-                        .map(RoleType::getName)
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toUnmodifiableSet())
-        );
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getPassword(),
+                createAuthoritiesFromRoles(
+                        Set.of(userAccount.getRole())
+                ));
     }
 
-    public static Principal fromDto(UserAccountDto dto){
-        return Principal.of(
-                dto.id(),
-                dto.password(),
-                dto.email(),
-                dto.nickname()
-        );
-    }
-
-    public static UserAccountDto toDto(Principal principal){
-        return UserAccountDto.of(
-                principal.id,
-                principal.email,
-                principal.password,
-                principal.nickname
-        );
-    }
-
-    @Override public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }
-
-    @Override public String getPassword() { return password; }
-    @Override public String getUsername() { return email; }
-    public Long getUserId() { return id; }
-    @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
-    @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
-
-    public enum RoleType {
-        USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
-
-        @Getter private final String name;
-        RoleType(String name){
-            this.name = name;
-        }
+    private static Set<SimpleGrantedAuthority> createAuthoritiesFromRoles(Set<RoleType> roleTypes) {
+        return roleTypes.stream()
+                .map(RoleType::getName)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
+

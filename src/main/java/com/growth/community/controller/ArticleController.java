@@ -28,13 +28,13 @@ public class ArticleController {
     @PostMapping
     public ResponseEntity<Long> postArticle(@RequestBody @Valid RequestArticleDto dto,
                                             @AuthenticationPrincipal Principal principal) {
-        Article article = articleService.createArticle(dto, principal.id());
+        Article article = articleService.createArticle(dto, principal.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(article.getId());
     }
 
     @GetMapping("/keyword/{keyword}")
     public ResponseEntity<ArticleDtos> getArticlesByKeyword(@PathVariable @Size(min = 1, max = 30, message = ValidationMessage.KEYWORD_LENGTH) String keyword,
-                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC, size = 10, page = 0) Pageable pageable) {
+                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok().body(articleService.searchArticlesByKeyword(keyword, pageable));
     }
 
@@ -46,14 +46,14 @@ public class ArticleController {
     @PutMapping
     public ResponseEntity<Void> putArticle(@RequestBody @Valid ArticleDto dto,
                                            @AuthenticationPrincipal Principal principal) {
-        articleService.updateArticle(dto, principal.id());
+        articleService.updateArticle(dto, principal.getId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/id/{articleId}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long articleId,
                                               @AuthenticationPrincipal Principal principal) {
-        articleService.deleteArticle(articleId, principal.id());
+        articleService.deleteArticle(articleId, principal.getId());
         return ResponseEntity.ok().build();
     }
 }

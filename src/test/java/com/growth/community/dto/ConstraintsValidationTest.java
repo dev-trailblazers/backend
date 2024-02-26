@@ -21,7 +21,7 @@ public class ConstraintsValidationTest {
     void userAccount_invalidEmail_Exception() {
         //Given
         UserAccountDto dto = UserAccountDto.builder()
-                .email("잘못된 이메일")
+                .username("잘못된 이메일")
                 .build();
         //When
         Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "email");
@@ -62,7 +62,7 @@ public class ConstraintsValidationTest {
     void userAccount_invalidGender_Exception() {
         //Given
         UserAccountDto dto = UserAccountDto.builder()
-                .gender('a')
+                .gender(true)
                 .build();
         //When
         Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "gender");
@@ -87,7 +87,7 @@ public class ConstraintsValidationTest {
     @DisplayName("경력은 0~40 범위를 넘어가면 예외가 발생한다.")
     @ValueSource(ints = {-1, 41})
     @ParameterizedTest
-    void userAccount_invalidCareer_Exception(int career) {
+    void userAccount_invalidCareer_Exception(byte career) {
         //Given
         UserAccountDto dto = UserAccountDto.builder()
                 .career(career)

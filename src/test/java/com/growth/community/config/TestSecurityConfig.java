@@ -2,6 +2,8 @@ package com.growth.community.config;
 
 
 import com.growth.community.domain.user.Position;
+import com.growth.community.domain.user.Region;
+import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.UserAccount;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.UserAccountRepository;
@@ -22,22 +24,22 @@ public class TestSecurityConfig {
 
     @BeforeTestMethod
     public void securitySetUp() {
-        given(userAccountRepository.findByEmail(anyString())).willReturn(
-                Optional.of(new UserAccount(
-                        1L,
-                        "testuser1@example.com",
-                        "password",
-                        Principal.RoleType.USER,
-                        "CHAN_YEONG",
-                        "CHANY",
-                        new Date(),
-                        'M',
-                        "01023953042",
-                        "영주",
-                        1,
-                        Position.WEB_BACKEND,
-                        false
-                ))
+        given(userAccountRepository.findByUsername(anyString()))
+                .willReturn(Optional.of(UserAccount.builder()
+                        .id(1L)
+                        .username("testuser1@example.com")
+                        .password("password")
+                        .role(RoleType.USER)
+                        .nickname("Chany")
+                        .birth(new Date(1999, 11, 23))
+                        .gender(true)
+                        .phoneNumber("01012345678")
+                        .workingArea(Region.대구)
+                        .career((byte) 1)
+                        .position(Position.WEB_BACKEND)
+                        .isDeactivated(false)
+                        .build()
+                )
         );
     }
 }

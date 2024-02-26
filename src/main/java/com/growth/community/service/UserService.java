@@ -9,8 +9,6 @@ import com.growth.community.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 
 @RequiredArgsConstructor
 @Service
@@ -19,8 +17,8 @@ public class UserService {
 
 
     public void join(UserAccountDto dto) {
-        if (userAccountRepository.existsByEmail(dto.email()))
-            throw new AlreadyExistsException(dto.email(), ExceptionMessage.EMAIL_IS_EXISTING);
+        if (userAccountRepository.existsByUsername(dto.username()))
+            throw new AlreadyExistsException(dto.username(), ExceptionMessage.EMAIL_IS_EXISTING);
         if (userAccountRepository.existsByNickname(dto.nickname()))
             throw new AlreadyExistsException(dto.nickname(), ExceptionMessage.NICKNAME_IS_EXISTING);
 
@@ -40,8 +38,8 @@ public class UserService {
             throw new AlreadyExistsException(dto.nickname(), ExceptionMessage.NICKNAME_IS_EXISTING);
         
         userAccount.setNickname(dto.nickname());
-        userAccount.setRegion(dto.region());
-        userAccount.setCareer(dto.career());
+        userAccount.setWorkingArea(dto.region());
+        userAccount.setCareer((byte) dto.career());
         userAccount.setPosition(dto.position());
         return UserAccountDto.fromEntity(userAccount);
     }

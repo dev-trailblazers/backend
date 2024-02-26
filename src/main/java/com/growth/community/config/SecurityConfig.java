@@ -1,8 +1,8 @@
 package com.growth.community.config;
 
 import com.growth.community.Exception.ExceptionMessage;
+import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.dto.Principal;
-import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +12,8 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -23,6 +25,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -53,6 +57,13 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
+        return username -> userAccountRepository.findByUsername(username)
+                .map(Principal::fromEntity)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(ExceptionMessage.USER_NOT_FOUND, username)));
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
@@ -64,19 +75,11 @@ public class SecurityConfig {
         return providerManager;
     }
 
-
-    @Bean
-    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
-        return email -> userAccountRepository.findByEmail(email)
-                .map(UserAccountDto::fromEntity)
-                .map(Principal::fromDto)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(ExceptionMessage.USER_NOT_FOUND, email)));
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 
 
     @Bean
