@@ -40,7 +40,7 @@ public class UserAccount extends AuditingField {
 
     @Setter
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private Level level;
 
     @Setter
