@@ -2,28 +2,24 @@ package com.growth.community.domain.user.dto;
 
 import com.growth.community.domain.user.*;
 import com.growth.community.domain.validation.ByteLength;
-import com.growth.community.domain.validation.Regex;
 import com.growth.community.domain.validation.ValidationMessage;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
 
 @Builder
 public record JoinDto(
-        @Pattern(regexp = Regex.USERNAME, message = ValidationMessage.INVALID_USERNAME_FORMAT)
-        String username,
-        @Pattern(regexp = Regex.PASSWORD, message = ValidationMessage.INVALID_PASSWORD_FORMAT)
-        String password,
-        @Pattern(regexp = Regex.PHONE_NUMBER, message = ValidationMessage.INVALID_PHONE_NUMBER_FORMAT)
-        String phoneNumber,
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{3,16}$", message = ValidationMessage.INVALID_USERNAME_FORMAT)
+        String username,    //영어 소문자 + 숫자 조합으로 3~16자
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,16}$", message = ValidationMessage.INVALID_PASSWORD_FORMAT)
+        String password,    //영대소문자 + 특수문자 + 숫자가 1개 이상 총 8~16자
+        @Pattern(regexp = "^[0-9]{11}", message = ValidationMessage.INVALID_PHONE_NUMBER_FORMAT)
+        String phoneNumber, //11자리 숫자
 
-        @Pattern(regexp = Regex.NAME, message = ValidationMessage.INVALID_NAME_FORMAT)
-        String name,
+        @Pattern(regexp = "^[가-힣]{2,6}$", message = ValidationMessage.INVALID_NAME_FORMAT)
+        String name,        //한글 2~6자
         Date birth,
         boolean gender,
 

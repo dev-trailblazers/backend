@@ -7,8 +7,8 @@ import com.growth.community.domain.comment.Comment;
 import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.domain.comment.dto.RequestCommentDto;
 import com.growth.community.domain.user.*;
+import com.growth.community.domain.user.dto.JoinDto;
 import com.growth.community.domain.user.dto.Principal;
-import com.growth.community.domain.user.dto.UserAccountDto;
 
 import java.util.Date;
 import java.util.List;
@@ -37,20 +37,21 @@ public class TestObjectFactory {
     }
 
     //DTO
-    public static UserAccountDto createUserAccountDto(){
-        return UserAccountDto.builder()
-                .username("test@test.com")
+    public static JoinDto createJoinDto(){
+        return JoinDto.builder()
+                .username("tester1")
                 .password("asdASD123!@#")
-                .name("홍길동")
-                .nickname("닉네임")
-                .birth(new Date(1999, 11, 23))
-                .gender(true)
                 .phoneNumber("01012345678")
-                .workingArea(Region.대구)
+                .name("홍길동")
+                .birth(new Date())
+                .gender(true)
+                .nickname("닉네임")
                 .level(Level.JUNIOR)
+                .workingArea(Region.대구)
                 .position(Position.WEB_BACKEND)
                 .build();
     }
+
     public static RequestArticleDto createRequestArticleDto() {
         return RequestArticleDto.of("title", "content", "#hashtag");
     }

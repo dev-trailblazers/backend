@@ -37,7 +37,7 @@ public class AuthenticationControllerTest {
     void join_201() throws Exception {
         mvc.perform(post("/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(TestObjectFactory.createUserAccountDto()))
+                        .content(mapper.writeValueAsString(TestObjectFactory.createJoinDto()))
                 )
                 .andExpect(status().isCreated())
                 .andDo(print());

@@ -1,12 +1,10 @@
 package com.growth.community.dto;
 
-import com.growth.community.domain.user.Level;
-import com.growth.community.domain.user.dto.UserAccountDto;
+import com.growth.community.domain.user.dto.JoinDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -17,15 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConstraintsValidationTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    @DisplayName("이메일 정보가 지정된 포맷을 지키지 않는다면 예외가 발생한다.")
-    @Test
-    void userAccount_invalidEmail_Exception() {
+    @DisplayName("아이디가 지정된 포맷을 지키지 않는다면 예외가 발생한다.")
+    @ValueSource(strings = {"aaa", "111", "a1", "abcdefgh123456789"})
+    @ParameterizedTest
+    void userAccount_invalidUsername_Exception(String username) {
         //Given
-        UserAccountDto dto = UserAccountDto.builder()
-                .username("잘못된 이메일")
+        JoinDto dto = JoinDto.builder()
+                .username(username)
                 .build();
         //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "email");
+        Set<ConstraintViolation<JoinDto>> validEmailViolations = validator.validateProperty(dto, "username");
         //Then
         assertThat(validEmailViolations.size()).isEqualTo(1);
     }
@@ -35,38 +34,25 @@ public class ConstraintsValidationTest {
     @ParameterizedTest
     void userAccount_invalidPassword_Exception(String password) {
         //Given
-        UserAccountDto dto = UserAccountDto.builder()
+        JoinDto dto = JoinDto.builder()
                 .password(password)
                 .build();
         //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "password");
+        Set<ConstraintViolation<JoinDto>> validEmailViolations = validator.validateProperty(dto, "password");
         //Then
         assertThat(validEmailViolations.size()).isEqualTo(1);
     }
 
-    @DisplayName("비밀번호가 지정된 포맷을 지키지 않는다면 예외가 발생한다.")
-    @ValueSource(strings = {"", "16자 이상의 닉네임 사용 불가"})
+    @DisplayName("닉네임이 지정된 포맷을 지키지 않는다면 예외가 발생한다.")
+    @ValueSource(strings = {"", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "가가가가가가가가가가가"})
     @ParameterizedTest
     void userAccount_invalidNickname_Exception(String nickname) {
         //Given
-        UserAccountDto dto = UserAccountDto.builder()
+        JoinDto dto = JoinDto.builder()
                 .nickname(nickname)
                 .build();
         //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "nickname");
-        //Then
-        assertThat(validEmailViolations.size()).isEqualTo(1);
-    }
-
-    @DisplayName("성별은 m,f가 아닌 다른 문자가 들어갈 시 예외가 발생한다.")
-    @Test
-    void userAccount_invalidGender_Exception() {
-        //Given
-        UserAccountDto dto = UserAccountDto.builder()
-                .gender(true)
-                .build();
-        //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "gender");
+        Set<ConstraintViolation<JoinDto>> validEmailViolations = validator.validateProperty(dto, "nickname");
         //Then
         assertThat(validEmailViolations.size()).isEqualTo(1);
     }
@@ -76,25 +62,11 @@ public class ConstraintsValidationTest {
     @ParameterizedTest
     void userAccount_invalidPhoneNumber_Exception(String phoneNumber) {
         //Given
-        UserAccountDto dto = UserAccountDto.builder()
+        JoinDto dto = JoinDto.builder()
                 .phoneNumber(phoneNumber)
                 .build();
         //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "phoneNumber");
-        //Then
-        assertThat(validEmailViolations.size()).isEqualTo(1);
-    }
-
-    @DisplayName("경력은 0~40 범위를 넘어가면 예외가 발생한다.")
-    @ValueSource(ints = {-1, 41})
-    @ParameterizedTest
-    void userAccount_invalidCareer_Exception(byte career) {
-        //Given
-        UserAccountDto dto = UserAccountDto.builder()
-                .level(Level.JUNIOR)
-                .build();
-        //When
-        Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "career");
+        Set<ConstraintViolation<JoinDto>> validEmailViolations = validator.validateProperty(dto, "phoneNumber");
         //Then
         assertThat(validEmailViolations.size()).isEqualTo(1);
     }

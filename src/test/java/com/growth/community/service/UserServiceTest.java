@@ -2,7 +2,7 @@ package com.growth.community.service;
 
 import com.growth.community.Exception.AlreadyExistsException;
 import com.growth.community.domain.user.UserAccount;
-import com.growth.community.domain.user.dto.UserAccountDto;
+import com.growth.community.domain.user.dto.JoinDto;
 import com.growth.community.repository.UserAccountRepository;
 import com.growth.community.util.TestObjectFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -29,9 +29,9 @@ class UserServiceTest {
     @Test
     void join_success() {
         //Given
-        UserAccountDto userAccountDto = TestObjectFactory.createUserAccountDto();
+        JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When
-        userService.join(userAccountDto);
+        userService.join(joinDto);
         //Then
         then(userAccountRepository).should().save(any(UserAccount.class));
     }
@@ -41,9 +41,9 @@ class UserServiceTest {
     void join_duplicateNickname_exception() {
         //Given
         given(userAccountRepository.existsByNickname(anyString())).willReturn(true);
-        UserAccountDto userAccountDto = TestObjectFactory.createUserAccountDto();
+        JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When & Then
-        assertThatThrownBy(() -> userService.join(userAccountDto))
+        assertThatThrownBy(() -> userService.join(joinDto))
                 .isInstanceOf(AlreadyExistsException.class);
     }
 
@@ -52,9 +52,9 @@ class UserServiceTest {
     void join_duplicateEmail_exception() {
         //Given
         given(userAccountRepository.existsByUsername(anyString())).willReturn(true);
-        UserAccountDto userAccountDto = TestObjectFactory.createUserAccountDto();
+        JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When & Then
-        assertThatThrownBy(() -> userService.join(userAccountDto))
+        assertThatThrownBy(() -> userService.join(joinDto))
                 .isInstanceOf(AlreadyExistsException.class);
     }
 }

@@ -47,7 +47,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[POST] 게시글 생성 API - 정상 호출")
-    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void postArticle_201() throws Exception {
         //Given
@@ -63,7 +63,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[POST] 게시글 생성 API - 실패(잘못된 요청 데이터)")
-    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
     void postArticle_dataIsInvalid_400(ArticleDto dto, String message) throws Exception {
@@ -88,7 +88,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[PUT] 게시글 수정 API - 정상 호출")
-    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void putArticle_200() throws Exception {
         mvc.perform(put("/articles")
@@ -98,7 +98,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[PUT] 게시글 수정 API - 실패(잘못된 요청 데이터)")
-    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
     void putArticle_articleIsInValid_400(ArticleDto dto, String message) throws Exception {
@@ -109,7 +109,7 @@ class ArticleControllerTest {
     }
 
     @DisplayName("[DELETE] 게시글 삭제 API - 정상 호출")
-    @WithUserDetails(value = "testuser1@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void deleteArticle_200() throws Exception {
         mvc.perform(delete("/articles/id/" + 1L))
