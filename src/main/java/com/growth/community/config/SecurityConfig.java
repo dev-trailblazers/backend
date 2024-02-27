@@ -6,6 +6,7 @@ import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.UserAccountRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -59,8 +60,9 @@ public class SecurityConfig {
         http
             .formLogin(login -> login.successHandler(new CustomLoginSuccessHandler()))
             .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true)
+                    .logoutSuccessHandler((request, response, authentication) ->
+                            response.setStatus(HttpServletResponse.SC_OK)
+                    ).invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID", "USERINFO")
             );
 
