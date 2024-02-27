@@ -1,3 +1,8 @@
+server:
+  servlet:
+    session:
+      timeout: 86400  # 3600(1시간) * 24 = 하루
+
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/h2test;MODE=MYSQL
@@ -11,9 +16,11 @@ spring:
     show-sql: true
     open-in-view: false
   sql.init.mode: always
+
+
 logging:
   level:
     com.com.growth.community: debug
     org.springframework.web.servlet: debug
-    org.springframework.security: trace
+    org.springframework.security: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace

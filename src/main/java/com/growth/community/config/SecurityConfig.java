@@ -1,9 +1,11 @@
 package com.growth.community.config;
 
 import com.growth.community.Exception.ExceptionMessage;
+import com.growth.community.auth.CustomLoginSuccessHandler;
 import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.repository.UserAccountRepository;
+import jakarta.servlet.http.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,13 +14,16 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,25 +40,37 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/articles/**",
-                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/join"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                ).formLogin(withDefaults())
-                .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true))
-                .build();
+        http
+            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/articles/**",
+                            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                    ).permitAll()
+                    .requestMatchers(
+                            HttpMethod.POST,
+                            "/join"
+                    ).permitAll()
+                    .anyRequest().authenticated()
+            );
+
+        http
+            .formLogin(login -> login.successHandler(new CustomLoginSuccessHandler()))
+            .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID", "USERINFO")
+            );
+
+        http
+            .sessionManagement(session -> session.maximumSessions(1)    //동시 접속 1명까지 허용
+                    .maxSessionsPreventsLogin(false)    //신규 로그인 시 기존 사용자 세션 종료
+                    .expiredUrl("http://localhost:3000")    //세션 만료 시 해당 페이지로 이동
+            );
+
+        return http.build();
     }
 
     @Bean
@@ -79,8 +96,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

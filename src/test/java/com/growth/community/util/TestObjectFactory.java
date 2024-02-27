@@ -12,7 +12,6 @@ import com.growth.community.domain.user.RoleType;
 import com.growth.community.domain.user.UserAccount;
 import com.growth.community.domain.user.dto.Principal;
 import com.growth.community.domain.user.dto.UserAccountDto;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Date;
 import java.util.List;
@@ -76,11 +75,12 @@ public class TestObjectFactory {
 
     //USER DETAIL
     public static Principal createPrincipal(){
-        return new Principal(
+        return Principal.of(
                 1L,
+                "닉네임",
                 "testuser1@example.com",
                 "1234",
-                List.of(new SimpleGrantedAuthority(RoleType.USER.getName()))
+                RoleType.USER
         );
     }
 }
