@@ -1,11 +1,7 @@
 package com.growth.community.config;
 
 
-import com.growth.community.domain.user.Position;
-import com.growth.community.domain.user.Region;
-import com.growth.community.domain.user.RoleType;
-import com.growth.community.domain.user.UserAccount;
-import com.growth.community.domain.user.dto.Principal;
+import com.growth.community.domain.user.*;
 import com.growth.community.repository.UserAccountRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -35,7 +31,7 @@ public class TestSecurityConfig {
                         .gender(true)
                         .phoneNumber("01012345678")
                         .workingArea(Region.대구)
-                        .career((byte) 1)
+                        .level(Level.JUNIOR)
                         .position(Position.WEB_BACKEND)
                         .isDeactivated(false)
                         .build()

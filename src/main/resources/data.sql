@@ -1,9 +1,9 @@
 -- User
-INSERT INTO user_account (username, password, role, name, nickname, birth, gender, phone_number, working_area, career, position, is_deactivated, created_at, modified_at, modified_By)
+INSERT INTO user_account (username, password, role, name, nickname, birth, gender, phone_number, working_area, level, position, is_deactivated, created_at, modified_at, modified_By)
 VALUES
-    ('tester1', '{noop}1234', 'USER', 'John Doe', 'johnny', '1990-01-01', false, '01023456789', '서울', 5, 'WEB_BACKEND', false, NOW(), NOW(), 1),
-    ('tester2', '{bcrypt}$2a$12$7ZnCSNpahJ9cJZ34psfDruTa95.VNWPqVNriJ4IOtlSdFzzpm96gu', 'USER', 'Jane Doe', 'jane', '1995-05-15', true, '01087654321', '대구', 3, 'WEB_FRONTEND', false, NOW(), NOW(), 1),
-    ('tester3', '{bcrypt}$2a$12$7ZnCSNpahJ9cJZ34psfDruTa95.VNWPqVNriJ4IOtlSdFzzpm96gu', 'USER', 'Bob Smith', 'bob', '1985-08-20', true, '01022334455', '경북', 8, 'IOS', false, NOW(), NOW(), 1);
+    ('tester1', '{noop}1234', 'USER', 'John Doe', 'johnny', '1990-01-01', false, '01023456789', '서울', 'JUNIOR', 'WEB_BACKEND', false, NOW(), NOW(), 1),
+    ('tester2', '{bcrypt}$2a$12$7ZnCSNpahJ9cJZ34psfDruTa95.VNWPqVNriJ4IOtlSdFzzpm96gu', 'USER', 'Jane Doe', 'jane', '1995-05-15', true, '01087654321', '대구', 'JUNIOR', 'WEB_FRONTEND', false, NOW(), NOW(), 1),
+    ('tester3', '{bcrypt}$2a$12$7ZnCSNpahJ9cJZ34psfDruTa95.VNWPqVNriJ4IOtlSdFzzpm96gu', 'USER', 'Bob Smith', 'bob', '1985-08-20', true, '01022334455', '경북', 'JUNIOR', 'IOS', false, NOW(), NOW(), 1);
 
 
 

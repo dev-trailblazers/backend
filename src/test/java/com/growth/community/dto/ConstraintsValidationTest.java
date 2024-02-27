@@ -1,5 +1,6 @@
 package com.growth.community.dto;
 
+import com.growth.community.domain.user.Level;
 import com.growth.community.domain.user.dto.UserAccountDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -90,7 +91,7 @@ public class ConstraintsValidationTest {
     void userAccount_invalidCareer_Exception(byte career) {
         //Given
         UserAccountDto dto = UserAccountDto.builder()
-                .career(career)
+                .level(Level.JUNIOR)
                 .build();
         //When
         Set<ConstraintViolation<UserAccountDto>> validEmailViolations = validator.validateProperty(dto, "career");

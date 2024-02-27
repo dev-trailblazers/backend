@@ -38,8 +38,8 @@ public class UserService {
             throw new AlreadyExistsException(dto.nickname(), ExceptionMessage.NICKNAME_IS_EXISTING);
         
         userAccount.setNickname(dto.nickname());
-        userAccount.setWorkingArea(dto.region());
-        userAccount.setCareer((byte) dto.career());
+        userAccount.setWorkingArea(dto.workingArea());
+        userAccount.setLevel(dto.level());
         userAccount.setPosition(dto.position());
         return UserAccountDto.fromEntity(userAccount);
     }

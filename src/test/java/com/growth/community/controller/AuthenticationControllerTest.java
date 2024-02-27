@@ -17,17 +17,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("API - 유저 컨트롤러")
+@DisplayName("API - 인증 컨트롤러")
 @Import(TestSecurityConfig.class)
-@WebMvcTest(UserController.class)
-public class UserControllerTest {
+@WebMvcTest(AuthenticationController.class)
+public class AuthenticationControllerTest {
     private final MockMvc mvc;
     private final ObjectMapper mapper;
 
     @MockBean private UserService userService;
 
 
-    public UserControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
+    public AuthenticationControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
         this.mvc = mvc;
         this.mapper = mapper;
     }

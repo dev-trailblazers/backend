@@ -37,9 +37,11 @@ public class UserAccount extends AuditingField {
     @Setter
     @Column(nullable = false, length = 30)
     private String nickname;
+
     @Setter
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private byte career;
+    private Level level;
 
     @Setter
     @Enumerated(EnumType.STRING)
