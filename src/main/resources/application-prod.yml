@@ -1,3 +1,8 @@
+server:
+  servlet:
+    session:
+      timeout: 86400  # 3600(1시간) * 24 = 하루
+
 spring:
   datasource:
     url: ${DATABASE_URL}
@@ -14,6 +19,7 @@ logging:
   level:
     com.com.growth.community: debug
     org.springframework.web.servlet: debug
+    org.springframework.security: error
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 springdoc:

@@ -10,17 +10,20 @@ spring:
     username: sa
     password:
   jpa:
-    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     open-in-view: false
-  sql.init.mode: always
-
 
 logging:
   level:
     com.com.growth.community: debug
-    org.springframework.web.servlet: debug
     org.springframework.security: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.web.servlet: debug
+
+api:
+  coolsms:
+    key: ${SMS_API_KEY}
+    secret: ${SMS_API_SECRET}
+    from: ${SMS_API_FROM}

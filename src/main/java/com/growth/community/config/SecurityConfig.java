@@ -52,7 +52,7 @@ public class SecurityConfig {
                     ).permitAll()
                     .requestMatchers(
                             HttpMethod.POST,
-                            "/join"
+                            "/auth/**"
                     ).permitAll()
                     .anyRequest().authenticated()
             );
