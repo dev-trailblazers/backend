@@ -1,10 +1,13 @@
 package com.growth.community.service;
 
-import com.growth.community.domain.user.SMSAuthenticationInfo;
+import com.growth.community.domain.auth.SMSAuthenticationInfo;
+import com.growth.community.domain.auth.SMSRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -12,31 +15,37 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationService {
     private final RedisTemplate<String, SMSAuthenticationInfo> redisTemplate;
     private final SMSService smsService;
+    private final String prefix = "authentication: ";
 
-    private final static int AUTHENTICATION_CODE_LENGTH = 6;
-
-
-
-    /**
-     * 1. 전화번호에 해당하는 인증 번호를 생성
-     * 2. 인증 번호를 Redis에 저장
-     * 3. 유저에게 인증 번호 문자 발송
-     * */
-    public void phoneNumberAuthenticationCode(String phoneNumber) {
-        String code = generateAuthenticationCode();
-        saveAuthenticationCode(phoneNumber, code);
-//        smsService.sendSMS(phoneNumber, code);
+    public void generateSMSAuthenticationCode(String phoneNumber) {
+        String authenticationCode = saveAuthenticationCode(phoneNumber);
+//        smsService.sendSMS(phoneNumber, authenticationCode);
     }
 
-    private String generateAuthenticationCode(){
-        return String.format("%06d", (int) (Math.random() * 1000000));
+    //todo: 반복적으로 요청할 확률이 높기 때문에 캐싱을 고려해보자.
+    public void matchSMSAuthenticationCode(SMSRequestDto dto){
+        String key = prefix + dto.phoneNumber();
+        SMSAuthenticationInfo smsAuthenticationInfo = Optional.ofNullable(redisTemplate.opsForValue().get(key))
+                .orElseThrow(() -> new NoSuchElementException("유효하지 않은 전화번호 입니다."));
+
+        smsAuthenticationInfo.match(dto.authenticationCode());
+        redisTemplate.opsForValue().set(key, smsAuthenticationInfo, 12, TimeUnit.HOURS);
     }
 
-    private void saveAuthenticationCode(String phoneNumber, String authenticationCode){
-        SMSAuthenticationInfo smsAuthenticationInfo = new SMSAuthenticationInfo(authenticationCode);
+    private String saveAuthenticationCode(String phoneNumber){
+        String key = prefix + phoneNumber;
+        SMSAuthenticationInfo smsAuthenticationInfo = redisTemplate.opsForValue().get(key);
 
-        String key = "authentication: " + phoneNumber;
-
-        redisTemplate.opsForValue().set(key, smsAuthenticationInfo, 1, TimeUnit.DAYS);
+        if(smsAuthenticationInfo == null){
+            smsAuthenticationInfo = new SMSAuthenticationInfo();
+            redisTemplate.opsForValue().set(key, smsAuthenticationInfo, 1, TimeUnit.DAYS);
+        } else {
+            smsAuthenticationInfo.refreshAuthenticateCode();
+            Long remainingExpireTime = redisTemplate.getExpire(key, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(key, smsAuthenticationInfo);
+            redisTemplate.expire(key, remainingExpireTime, TimeUnit.SECONDS);
+        }
+        return smsAuthenticationInfo.getAuthenticationCode();
     }
+
 }

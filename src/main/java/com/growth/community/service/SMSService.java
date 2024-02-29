@@ -18,7 +18,7 @@ public class SMSService {
     @Value("${api.coolsms.secret}")
     private String secret;
     @Value("${api.coolsms.from}")
-    private final String rep = "";  //대표 번호
+    private String rep;  //대표 번호
 
     private final String url = "https://api.coolsms.co.kr";
 

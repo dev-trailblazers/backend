@@ -1,6 +1,9 @@
 package com.growth.community.config;
 
-import com.growth.community.domain.user.SMSAuthenticationInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growth.community.domain.auth.SMSAuthenticationInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,15 +15,18 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
+@RequiredArgsConstructor
 @Configuration
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
+
+    private final ObjectMapper objectMapper;
 
 
     @Bean
@@ -42,11 +48,9 @@ public class RedisConfig {
 
         @Override
         public byte[] serialize(SMSAuthenticationInfo smsAuthenticationInfo) throws SerializationException {
-            try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                 ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-                oos.writeObject(smsAuthenticationInfo);
-                return bos.toByteArray();
-            } catch (IOException e) {
+            try {
+                return objectMapper.writeValueAsString(smsAuthenticationInfo).getBytes(StandardCharsets.UTF_8);
+            } catch (JsonProcessingException e) {
                 throw new SerializationException("Error serializing object", e);
             }
         }
@@ -56,9 +60,10 @@ public class RedisConfig {
             if (bytes == null) {
                 return null;
             }
-            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-                return (SMSAuthenticationInfo) ois.readObject();
-            } catch (IOException | ClassNotFoundException e) {
+            try {
+                String json = new String(bytes, StandardCharsets.UTF_8);
+                return objectMapper.readValue(json, SMSAuthenticationInfo.class);
+            } catch (JsonProcessingException e) {
                 throw new SerializationException("Error deserializing object", e);
             }
         }
