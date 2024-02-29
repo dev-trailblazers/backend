@@ -12,8 +12,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+      dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_URL}
+      port: ${REDIS_PROT}
+
 
 logging:
   level:

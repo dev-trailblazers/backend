@@ -22,17 +22,16 @@ public class SMSService {
 
     private final String url = "https://api.coolsms.co.kr";
 
-    private final static int AUTHENTICATION_NUMBER_LENGTH = 6;
 
 
-    public void sendSMS(String phoneNumber){
+    public void sendSMS(String phoneNumber, String AuthenticationCode){
         DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(key, secret, url);
 
         Message message = new Message();
         message.setFrom(rep);
         message.setTo(phoneNumber);
         /* SMS는 한글 45자, 영어 90자까지 입력할 수 있으며 초과 시 자동으로 LMS 타입으로 변경됨 */
-        message.setText("[TrailBlazers] 인증번호: " + generateAuthenticationNumber());
+        message.setText("[TrailBlazers] 인증번호: " + AuthenticationCode);
 
         try {
             messageService.send(message);
@@ -45,11 +44,5 @@ public class SMSService {
     }
 
 
-    private String generateAuthenticationNumber(){
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i<AUTHENTICATION_NUMBER_LENGTH; i++){
-            sb.append((int) (Math.random() * 10));
-        }
-        return sb.toString();
-    }
+
 }
