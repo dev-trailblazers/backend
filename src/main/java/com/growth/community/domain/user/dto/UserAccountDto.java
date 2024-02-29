@@ -1,6 +1,9 @@
 package com.growth.community.domain.user.dto;
 
 import com.growth.community.domain.user.*;
+import com.growth.community.domain.user.enums.Level;
+import com.growth.community.domain.user.enums.Position;
+import com.growth.community.domain.user.enums.Region;
 import lombok.Builder;
 
 import java.util.Date;

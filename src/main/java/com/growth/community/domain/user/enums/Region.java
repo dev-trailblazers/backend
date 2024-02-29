@@ -1,4 +1,4 @@
-package com.growth.community.domain.user;
+package com.growth.community.domain.user.enums;
 
 public enum Region {
     서울, 경기, 인천,

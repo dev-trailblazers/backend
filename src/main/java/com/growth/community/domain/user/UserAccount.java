@@ -1,6 +1,10 @@
 package com.growth.community.domain.user;
 
 import com.growth.community.domain.AuditingField;
+import com.growth.community.domain.user.enums.Level;
+import com.growth.community.domain.user.enums.Position;
+import com.growth.community.domain.user.enums.Region;
+import com.growth.community.domain.user.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

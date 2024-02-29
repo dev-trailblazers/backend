@@ -9,6 +9,10 @@ import com.growth.community.domain.comment.dto.RequestCommentDto;
 import com.growth.community.domain.user.*;
 import com.growth.community.domain.user.dto.JoinDto;
 import com.growth.community.domain.user.dto.Principal;
+import com.growth.community.domain.user.enums.Level;
+import com.growth.community.domain.user.enums.Position;
+import com.growth.community.domain.user.enums.Region;
+import com.growth.community.domain.user.enums.RoleType;
 
 import java.util.Date;
 import java.util.List;

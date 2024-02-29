@@ -2,6 +2,10 @@ package com.growth.community.config;
 
 
 import com.growth.community.domain.user.*;
+import com.growth.community.domain.user.enums.Level;
+import com.growth.community.domain.user.enums.Position;
+import com.growth.community.domain.user.enums.Region;
+import com.growth.community.domain.user.enums.RoleType;
 import com.growth.community.repository.UserAccountRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;

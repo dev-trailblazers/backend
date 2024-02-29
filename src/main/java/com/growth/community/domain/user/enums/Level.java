@@ -1,4 +1,4 @@
-package com.growth.community.domain.user;
+package com.growth.community.domain.user.enums;
 
 public enum Level {
     JOB_SEEKER("취준생"),

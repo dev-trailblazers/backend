@@ -1,6 +1,6 @@
 package com.growth.community.domain.user.dto;
 
-import com.growth.community.domain.user.RoleType;
+import com.growth.community.domain.user.enums.RoleType;
 import com.growth.community.domain.user.UserAccount;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
