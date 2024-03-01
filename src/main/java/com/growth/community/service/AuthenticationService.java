@@ -32,6 +32,14 @@ public class AuthenticationService {
         redisTemplate.opsForValue().set(key, smsAuthenticationInfo, 12, TimeUnit.HOURS);
     }
 
+    public boolean getSMSAuthenticationStatus(String phoneNumber){
+        String key = prefix + phoneNumber;
+        SMSAuthenticationInfo smsAuthenticationInfo = Optional.ofNullable(redisTemplate.opsForValue().get(key))
+                .orElseThrow(() -> new NoSuchElementException("유효하지 않은 전화번호 입니다."));
+
+        return smsAuthenticationInfo.isAuthenticationStatus();
+    }
+
     private String saveAuthenticationCode(String phoneNumber){
         String key = prefix + phoneNumber;
         SMSAuthenticationInfo smsAuthenticationInfo = redisTemplate.opsForValue().get(key);

@@ -22,13 +22,24 @@ public class AuthenticationController {
 
     @PostMapping("/join")
     public ResponseEntity<Void> joinUser(@RequestBody @Valid JoinDto dto){
-        userService.join(dto);
+        boolean smsAuthenticationStatus = authenticationService.getSMSAuthenticationStatus(dto.phoneNumber());
+        userService.join(dto, smsAuthenticationStatus);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    //String으로 받을 땐 JSON이 아닌 TEXT 타입으로 전송
+    @PostMapping("/username")
+    public ResponseEntity<Boolean> checkDuplicateUsername(@RequestBody String username){
+        return ResponseEntity.ok().body(userService.checkDuplicateUsername(username));
+    }
+
+    @PostMapping("/nickname")
+    public ResponseEntity<Boolean> checkDuplicateNickname(@RequestBody String nickname){
+        return ResponseEntity.ok().body(userService.checkDuplicateNickname(nickname));
     }
 
     @PostMapping("/sms")
     public ResponseEntity<Void> sendSMS(@RequestBody @Pattern(regexp = "^[0-9]{11}") String phoneNumber){
-        //String으로 받을 땐 JSON이 아닌 TEXT 타입으로 전송
         authenticationService.generateSMSAuthenticationCode(phoneNumber);
         return ResponseEntity.ok().build();
     }

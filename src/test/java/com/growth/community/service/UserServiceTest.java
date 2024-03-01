@@ -31,7 +31,7 @@ class UserServiceTest {
         //Given
         JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When
-        userService.join(joinDto);
+        userService.join(joinDto, true);
         //Then
         then(userAccountRepository).should().save(any(UserAccount.class));
     }
@@ -43,7 +43,7 @@ class UserServiceTest {
         given(userAccountRepository.existsByNickname(anyString())).willReturn(true);
         JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When & Then
-        assertThatThrownBy(() -> userService.join(joinDto))
+        assertThatThrownBy(() -> userService.join(joinDto, true))
                 .isInstanceOf(AlreadyExistsException.class);
     }
 
@@ -54,7 +54,7 @@ class UserServiceTest {
         given(userAccountRepository.existsByUsername(anyString())).willReturn(true);
         JoinDto joinDto = TestObjectFactory.createJoinDto();
         //When & Then
-        assertThatThrownBy(() -> userService.join(joinDto))
+        assertThatThrownBy(() -> userService.join(joinDto, true))
                 .isInstanceOf(AlreadyExistsException.class);
     }
 }
