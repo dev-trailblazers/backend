@@ -16,18 +16,18 @@ public record ArticleDto(
         String title,
         @ByteLength(min = 1, max = 3000, message = ValidationMessage.ARTICLE_CONTENT_LENGTH) String content,
         @HashTags String hashtags,
-
+        int commentCount,
         Long userId,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         Long modifiedBy) {
 
     public static ArticleDto of(String title, String content, String hashTags){
-        return new ArticleDto(null, title, content, hashTags, null,null, null, null);
+        return new ArticleDto(null, title, content, hashTags, 0, null,null, null, null);
     }
 
     public static ArticleDto of(Long id, String title, String content, String hashTags){
-        return new ArticleDto(id, title, content, hashTags, null,null, null, null);
+        return new ArticleDto(id, title, content, hashTags, 0, null,null, null, null);
     }
 
     public static ArticleDto fromEntity(Article article) {
@@ -37,6 +37,7 @@ public record ArticleDto(
                 .content(article.getContent())
                 .hashtags(article.getHashtags())
                 .userId(article.getUserAccount().getId())
+                .commentCount(article.getComments().size())
                 .createdAt(article.getCreatedAt())
                 .modifiedAt(article.getModifiedAt())
                 .modifiedBy(article.getModifiedBy())
