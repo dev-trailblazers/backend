@@ -80,8 +80,8 @@ public class ArticleService {
     }
 
     public ArticleDtos getArticleByUser(Long userId, Pageable pageable) {
-        Long count = articleRepository.countByCommentAndUserId(userId);
-        List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
+        Long count = articleRepository.countByUserAccount_Id(userId);
+        List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
 
         List<ArticleDto> articleDtos = articles.stream()
                 .map(ArticleDto::fromEntity)
@@ -90,8 +90,8 @@ public class ArticleService {
     }
 
     public ArticleDtos getArticleByUserComment(Long userId, Pageable pageable) {
-        Long count = articleRepository.countByUserAccount_Id(userId);
-        List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
+        Long count = articleRepository.countByCommentAndUserId(userId);
+        List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
 
         List<ArticleDto> articleDtos = articles.stream()
                 .map(ArticleDto::fromEntity)
