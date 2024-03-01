@@ -24,6 +24,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 <<<<<<< develop
 <<<<<<< develop
 <<<<<<< develop
+<<<<<<< develop
 =======
 <<<<<<< b717eca99bd243f2fa8e8baebaac66d888736781
 =======
@@ -39,9 +40,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 >>>>>>> feat: 내가 쓴 게시글, 댓글 단 게시글 조회 구현
     @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.comments c JOIN c.userAccount u WHERE u.id = :userId")
 =======
+=======
+>>>>>>> refactor: git 충돌 부분 삭제
     @Query("SELECT COUNT(DISTINCT a) FROM Article a JOIN a.comments c WHERE c.userAccount.id = :userId")
     Long countByCommentAndUserId(@Param("userId") Long userId);
     @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.comments c WHERE a.userAccount.id = :userId")
->>>>>>> feat: 게시글 목록 조회 시 게시글에 해당하는 댓글 수 추가
     List<Article> findAllByCommentAndUserId(Long userId, Pageable pageable);
 }

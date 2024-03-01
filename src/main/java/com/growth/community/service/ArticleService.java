@@ -81,12 +81,17 @@ public class ArticleService {
 
     public ArticleDtos getArticleByUser(Long userId, Pageable pageable) {
 <<<<<<< develop
+<<<<<<< develop
         Long count = articleRepository.countByCommentAndUserId(userId);
         List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
 =======
         Long count = articleRepository.countByUserAccount_Id(userId);
         List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
 >>>>>>> feat: 내가 쓴 게시글, 댓글 단 게시글 조회 구현
+=======
+        Long count = articleRepository.countByUserAccount_Id(userId);
+        List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
+>>>>>>> refactor: git 충돌 부분 삭제
 
         List<ArticleDto> articleDtos = articles.stream()
                 .map(ArticleDto::fromEntity)
@@ -96,12 +101,17 @@ public class ArticleService {
 
     public ArticleDtos getArticleByUserComment(Long userId, Pageable pageable) {
 <<<<<<< develop
+<<<<<<< develop
         Long count = articleRepository.countByUserAccount_Id(userId);
         List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
 =======
         Long count = articleRepository.countByCommentAndUserId(userId);
         List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
 >>>>>>> feat: 내가 쓴 게시글, 댓글 단 게시글 조회 구현
+=======
+        Long count = articleRepository.countByCommentAndUserId(userId);
+        List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
+>>>>>>> refactor: git 충돌 부분 삭제
 
         List<ArticleDto> articleDtos = articles.stream()
                 .map(ArticleDto::fromEntity)
