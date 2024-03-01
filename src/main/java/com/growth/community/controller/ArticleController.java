@@ -1,7 +1,6 @@
 package com.growth.community.controller;
 
 import com.growth.community.domain.article.Article;
-import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.domain.article.dto.RequestArticleDto;
 import com.growth.community.domain.article.dto.ArticleDtos;
@@ -18,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 
 @RequiredArgsConstructor
 @RequestMapping("/articles")
@@ -56,5 +56,19 @@ public class ArticleController {
                                               @AuthenticationPrincipal Principal principal) {
         articleService.deleteArticle(articleId, principal.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<ArticleDtos> getMyArticles(@AuthenticationPrincipal Principal principal,
+                                                           @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        ArticleDtos articles = articleService.getArticleByUser(principal.getId(), pageable);
+        return ResponseEntity.ok().body(articles);
+    }
+
+    @GetMapping("/my-comments")
+    public ResponseEntity<ArticleDtos> getArticlesByComment(@AuthenticationPrincipal Principal principal,
+                                                                  @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        ArticleDtos articles = articleService.getArticleByUserComment(principal.getId(), pageable);
+        return ResponseEntity.ok().body(articles);
     }
 }

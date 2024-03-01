@@ -8,11 +8,13 @@ import com.growth.community.domain.article.dto.ArticleWithCommentDto;
 import com.growth.community.domain.article.dto.RequestArticleDto;
 import com.growth.community.domain.article.dto.ArticleDtos;
 import com.growth.community.domain.user.UserAccount;
+import com.growth.community.domain.user.dto.UserAccountDto;
 import com.growth.community.repository.ArticleRepository;
 import com.growth.community.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +77,26 @@ public class ArticleService {
         }
 
         articleRepository.deleteById(articleId);
+    }
+
+    public ArticleDtos getArticleByUser(Long userId, Pageable pageable) {
+        Long count = articleRepository.countByCommentAndUserId(userId);
+        List<Article> articles = articleRepository.findAllByCommentAndUserId(userId, pageable);
+
+        List<ArticleDto> articleDtos = articles.stream()
+                .map(ArticleDto::fromEntity)
+                .toList();
+        return new ArticleDtos(articleDtos, count);
+    }
+
+    public ArticleDtos getArticleByUserComment(Long userId, Pageable pageable) {
+        Long count = articleRepository.countByUserAccount_Id(userId);
+        List<Article> articles = articleRepository.findAllByUserAccount_Id(userId, pageable);
+
+        List<ArticleDto> articleDtos = articles.stream()
+                .map(ArticleDto::fromEntity)
+                .toList();
+        return new ArticleDtos(articleDtos, count);
     }
 
 }

@@ -18,16 +18,17 @@ public class UserController {
     private final UserService userService;
 
 
-    @PostMapping("/info")
+    @GetMapping("/info")
     public ResponseEntity<UserAccountDto> getUserInfo(@AuthenticationPrincipal Principal principal){
         UserAccountDto dto = userService.inquiryUser(principal.getId());
         return ResponseEntity.ok().body(dto);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/info")
     public ResponseEntity<UserAccountDto> putUser(@RequestBody UserUpdateDto dto,
                                                   @AuthenticationPrincipal Principal principal){
         UserAccountDto userAccountDto = userService.updateUser(dto, principal.getId());
         return ResponseEntity.ok().body(userAccountDto);
     }
+
 }
