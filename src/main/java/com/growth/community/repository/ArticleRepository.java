@@ -23,6 +23,14 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 <<<<<<< develop
 <<<<<<< develop
+<<<<<<< develop
+=======
+<<<<<<< b717eca99bd243f2fa8e8baebaac66d888736781
+=======
+<<<<<<< develop
+<<<<<<< develop
+>>>>>>> feat: 게시글 목록 조회 시 게시글에 해당하는 댓글 수 추가
+>>>>>>> feat: 게시글 목록 조회 시 게시글에 해당하는 댓글 수 추가
     @Query("SELECT COUNT (a) FROM Article a JOIN FETCH a.comments c JOIN c.userAccount u WHERE u.id = :userId")
     Long countByCommentAndUserId(Long userId);
 =======
