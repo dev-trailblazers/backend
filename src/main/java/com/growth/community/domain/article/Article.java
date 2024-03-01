@@ -19,14 +19,15 @@ public class Article extends AuditingField {
     private Long id;
 
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, length = 300)
     private String title;
 
     @Setter
-    @Column(nullable = false, length = 10000)
+    @Column(nullable = false, length = 3000)
     private String content;
 
     @Setter
+    @Column(length = 200)
     private String hashtags;
 
     @Setter

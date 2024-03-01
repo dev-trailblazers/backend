@@ -28,7 +28,7 @@ public class Comment extends AuditingField {
     private Long parentCommentId;
 
     @Setter
-    @Column(nullable = false, length = 10000)
+    @Column(nullable = false, length = 1500)
     private String content;
 
     @Setter

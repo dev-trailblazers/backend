@@ -2,6 +2,7 @@ package com.growth.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.growth.community.config.TestSecurityConfig;
+import com.growth.community.service.AuthenticationService;
 import com.growth.community.service.UserService;
 import com.growth.community.util.TestObjectFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +28,7 @@ public class AuthenticationControllerTest {
     private final ObjectMapper mapper;
 
     @MockBean private UserService userService;
+    @MockBean private AuthenticationService authenticationService;
 
 
     public AuthenticationControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper mapper) {
@@ -35,7 +39,8 @@ public class AuthenticationControllerTest {
     @DisplayName("[POST] 회원 가입 API - 정상 호출")
     @Test
     void join_201() throws Exception {
-        mvc.perform(post("/join")
+        given(authenticationService.getSMSAuthenticationStatus(anyString())).willReturn(true);
+        mvc.perform(post("/auth/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(TestObjectFactory.createJoinDto()))
                 )

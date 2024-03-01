@@ -91,7 +91,7 @@ class ArticleControllerTest {
     @WithUserDetails(value = "tester1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void putArticle_200() throws Exception {
-        mvc.perform(put("/articles")
+        mvc.perform(put("/articles/id/1")
                         .content(mapper.writeValueAsString(TestObjectFactory.createArticleDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -102,7 +102,7 @@ class ArticleControllerTest {
     @MethodSource("invalidArticleDto")
     @ParameterizedTest(name = "{index}: {1}")
     void putArticle_articleIsInValid_400(ArticleDto dto, String message) throws Exception {
-        mvc.perform(put("/articles")
+        mvc.perform(put("/articles/id/1")
                         .content(mapper.writeValueAsString(dto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

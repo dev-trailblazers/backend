@@ -5,6 +5,7 @@ import com.growth.community.domain.article.Article;
 import com.growth.community.domain.article.dto.ArticleDto;
 import com.growth.community.domain.article.dto.ArticleDtos;
 import com.growth.community.domain.article.dto.ArticleWithCommentDto;
+import com.growth.community.domain.article.dto.RequestArticleDto;
 import com.growth.community.repository.ArticleRepository;
 import com.growth.community.repository.UserAccountRepository;
 import com.growth.community.util.TestObjectFactory;
@@ -85,18 +86,18 @@ class ArticleServiceTest {
     @Test
     void updateArticle_success() {
         //Given
-        ArticleDto dto = TestObjectFactory.createArticleDto(1L);
+        RequestArticleDto dto = TestObjectFactory.createRequestArticleDto();
         Article article = TestObjectFactory.createArticle();
         given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
                 .willReturn(Optional.of(article));
         //When
-        articleService.updateArticle(dto, 1L);
+        articleService.updateArticle(dto, 1L, 1L);
         //Then
         assertThat(article)
                 .hasFieldOrPropertyWithValue("title", dto.title())
                 .hasFieldOrPropertyWithValue("content", dto.content())
                 .hasFieldOrPropertyWithValue("hashtags", dto.hashtags());
-        then(articleRepository).should().findByIdAndUserAccount_Id(dto.id(), 1L);
+        then(articleRepository).should().findByIdAndUserAccount_Id(1L, 1L);
     }
 
     @DisplayName("본인이 작성하지 않은 게시글 수정 시 예외가 발생한다.")
@@ -106,7 +107,7 @@ class ArticleServiceTest {
         given(articleRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
                 .willReturn(Optional.empty());
         //When & Then
-        assertThatThrownBy(() -> articleService.updateArticle(TestObjectFactory.createArticleDto(1L), 1L))
+        assertThatThrownBy(() -> articleService.updateArticle(TestObjectFactory.createRequestArticleDto(), 1L, 1L))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

@@ -1,6 +1,7 @@
 package com.growth.community.domain.comment.dto;
 
 import com.growth.community.domain.comment.Comment;
+import com.growth.community.domain.validation.ByteLength;
 import com.growth.community.domain.validation.ValidationMessage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ public record CommentDto(
         Long id,
         @NotNull(message = ValidationMessage.ARTICLE_ID_IS_REQUIRED) Long articleId,
         Long parentCommentId,
-        @NotBlank(message = ValidationMessage.CONTENT_IS_REQUIRED) String content,
+        @ByteLength(min = 1, max = 1500, message = ValidationMessage.COMMENT_CONTENT_LENGTH) String content,
         Long userId,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,

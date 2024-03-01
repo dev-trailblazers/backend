@@ -1,9 +1,9 @@
 package com.growth.community.domain.article.dto;
 
 import com.growth.community.domain.article.Article;
+import com.growth.community.domain.validation.ByteLength;
 import com.growth.community.domain.validation.HashTags;
 import com.growth.community.domain.validation.ValidationMessage;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @Builder
 public record ArticleDto(
         Long id,
-        @NotBlank(message = ValidationMessage.TITLE_IS_REQUIRED) String title,
-        @NotBlank(message = ValidationMessage.CONTENT_IS_REQUIRED) String content,
+        @ByteLength(min = 1, max = 300, message = ValidationMessage.ARTICLE_TITLE_LENGTH)
+        String title,
+        @ByteLength(min = 1, max = 3000, message = ValidationMessage.ARTICLE_CONTENT_LENGTH) String content,
         @HashTags String hashtags,
 
         Long userId,

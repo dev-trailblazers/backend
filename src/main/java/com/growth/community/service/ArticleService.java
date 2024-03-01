@@ -53,9 +53,9 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
     }
 
-    public void updateArticle(ArticleDto dto, Long userId) {
-        Article article = articleRepository.findByIdAndUserAccount_Id(dto.id(), userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, dto.id())));
+    public void updateArticle(RequestArticleDto dto, Long articleId,  Long userId) {
+        Article article = articleRepository.findByIdAndUserAccount_Id(articleId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ExceptionMessage.ARTICLE_NOT_FOUND, articleId)));
 
         article.setTitle(dto.title());
         article.setContent(dto.content());
