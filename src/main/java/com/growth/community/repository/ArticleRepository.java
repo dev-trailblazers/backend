@@ -23,8 +23,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Long countByUserAccount_Id(Long userId);
     List<Article> findAllByUserAccount_Id(Long userId, Pageable pageable);
 
+<<<<<<< develop
     @Query("SELECT COUNT (a) FROM Article a JOIN FETCH a.comments c JOIN c.userAccount u WHERE u.id = :userId")
     Long countByCommentAndUserId(Long userId);
+=======
+    @Query("SELECT COUNT(DISTINCT a) FROM Article a JOIN a.comments c JOIN c.userAccount u WHERE u.id = :userId")
+    Long countByCommentAndUserId(@Param("userId") Long userId);
+>>>>>>> feat: 내가 쓴 게시글, 댓글 단 게시글 조회 구현
     @Query("SELECT DISTINCT a FROM Article a JOIN FETCH a.comments c JOIN c.userAccount u WHERE u.id = :userId")
     List<Article> findAllByCommentAndUserId(Long userId, Pageable pageable);
 }
