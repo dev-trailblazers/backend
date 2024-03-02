@@ -33,22 +33,19 @@ public class CommentService {
         );
 
         Comment comment = new Comment(article, dto.parentCommentId(), dto.content(), userAccount);
-//        article.getComments().add(comment);
         commentRepository.save(comment);
     }
 
-    public void updateComment(CommentDto dto, Long userId) {
+    public void updateComment(String content, Long commentId, Long userId) {
         // TODO: 댓글이 없는 건지, 내가 쓴 글이 아니라서 인지 알 수 없음
-        Comment comment = commentRepository.findByIdAndUserAccount_Id(dto.id(), userId)
+        Comment comment = commentRepository.findByIdAndUserAccount_Id(commentId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 수정할 수 없습니다."));
-
-        comment.setContent(dto.content());
+        comment.setContent(content);
     }
 
     public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findByIdAndUserAccount_Id(commentId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 삭제할 수 없습니다."));
-
         comment.setRemoved(true);
     }
 }

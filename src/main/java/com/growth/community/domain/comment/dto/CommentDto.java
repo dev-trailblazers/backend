@@ -3,7 +3,6 @@ package com.growth.community.domain.comment.dto;
 import com.growth.community.domain.comment.Comment;
 import com.growth.community.domain.validation.ByteLength;
 import com.growth.community.domain.validation.ValidationMessage;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -16,13 +15,13 @@ public record CommentDto(
         Long parentCommentId,
         @ByteLength(min = 1, max = 1500, message = ValidationMessage.COMMENT_CONTENT_LENGTH) String content,
         Long userId,
+        Boolean isRemoved,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
-        Long modifiedBy
-) {
+        Long modifiedBy) {
 
     public static CommentDto of(Long id, Long articleId, String content){
-        return new CommentDto(id, articleId, null, content, null,null, null, null);
+        return new CommentDto(id, articleId, null, content, null,null, null, null, null);
     }
 
     public static CommentDto fromEntity(Comment comment){
@@ -32,6 +31,7 @@ public record CommentDto(
                 .articleId(comment.getArticle().getId())
                 .parentCommentId(comment.getParentCommentId())
                 .userId(comment.getId())
+                .isRemoved(comment.isRemoved())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .modifiedBy(comment.getModifiedBy())

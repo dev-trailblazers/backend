@@ -43,7 +43,7 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.inquiryArticleWithComments(articleId));
     }
 
-    @PutMapping("/id/{articleId}")
+    @PutMapping ("/id/{articleId}")
     public ResponseEntity<Void> putArticle(@RequestBody @Valid RequestArticleDto dto,
                                            @PathVariable Long articleId,
                                            @AuthenticationPrincipal Principal principal) {

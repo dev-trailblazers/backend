@@ -52,14 +52,13 @@ public class CommentServiceTest {
     void updateComment_success() {
         //Given
         Optional<Comment> comment = Optional.of(TestObjectFactory.createComment());
-        CommentDto dto = TestObjectFactory.createCommentDto();
         given(commentRepository.findByIdAndUserAccount_Id(anyLong(), anyLong()))
                 .willReturn(comment);
         //When
-        commentService.updateComment(dto, 1L);
+        commentService.updateComment("새로운 댓글", 1L, 1L);
         //Then
-        then(commentRepository).should().findByIdAndUserAccount_Id(dto.articleId(), 1L);
-        assertThat(comment.get().getContent()).isEqualTo(dto.content());
+        then(commentRepository).should().findByIdAndUserAccount_Id(1L, 1L);
+        assertThat(comment.get().getContent()).isEqualTo("새로운 댓글");
     }
 
     @DisplayName("댓글 아이디를 통해 댓글을 삭제한다 - 성공")
