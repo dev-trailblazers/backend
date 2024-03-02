@@ -32,7 +32,6 @@ public record ArticleWithCommentDto(
                 .commentDtos(Optional.ofNullable(article.getComments())
                         .orElseGet(Collections::emptyList)
                         .stream()
-                        .filter(comment -> !comment.isRemoved())
                         .map(CommentDto::fromEntity)
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .createdAt(article.getCreatedAt())
