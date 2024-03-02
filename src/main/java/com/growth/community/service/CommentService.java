@@ -1,7 +1,6 @@
 package com.growth.community.service;
 
 import com.growth.community.domain.article.Article;
-import com.growth.community.domain.comment.dto.CommentDto;
 import com.growth.community.domain.comment.Comment;
 import com.growth.community.domain.comment.dto.RequestCommentDto;
 import com.growth.community.domain.user.UserAccount;
@@ -14,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.function.ToDoubleBiFunction;
 
 @Slf4j
 @RequiredArgsConstructor
