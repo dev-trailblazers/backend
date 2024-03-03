@@ -44,7 +44,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdAndUserAccount_Id(commentId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 삭제할 수 없습니다."));
 
-        if(comment.getParentCommentId() != null || commentRepository.countByParentCommentId(commentId) > 0){
+        if(comment.getParentCommentId() != null || commentRepository.countByParentCommentId(commentId) <= 0){
             commentRepository.deleteById(commentId);
         } else {
             comment.setRemoved(true);
