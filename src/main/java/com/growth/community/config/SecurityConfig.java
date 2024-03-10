@@ -56,10 +56,11 @@ public class SecurityConfig {
             );
 
         http
-            .sessionManagement(session -> session.maximumSessions(1)    //동시 접속 1명까지 허용
-                    .maxSessionsPreventsLogin(false)    //신규 로그인 시 기존 사용자 세션 종료
-                    .expiredUrl("http://localhost:3000")    //세션 만료 시 해당 페이지로 이동
-            );
+                .sessionManagement(session -> session.invalidSessionUrl("/logout") //세션이 유효하지 않을 시 /logout으로 이동해서 쿠키 삭제
+                        .maximumSessions(1)    //동시 접속 1명까지 허용
+                        .maxSessionsPreventsLogin(false)    //신규 로그인 시 기존 사용자 세션 종료
+                        .expiredUrl("http://localhost:3000")    //세션 만료 시 해당 페이지로 이동
+                );
 
         return http.build();
     }
