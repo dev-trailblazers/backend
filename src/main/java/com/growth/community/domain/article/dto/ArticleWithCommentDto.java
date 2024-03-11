@@ -18,6 +18,7 @@ public record ArticleWithCommentDto(
         String content,
         String hashtags,
         Long userId,
+        String nickname,
         Set<CommentDto> commentDtos,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
@@ -29,6 +30,7 @@ public record ArticleWithCommentDto(
                 .content(article.getContent())
                 .hashtags(article.getHashtags())
                 .userId(article.getUserAccount().getId())
+                .nickname(article.getUserAccount().getNickname())
                 .commentDtos(Optional.ofNullable(article.getComments())
                         .orElseGet(Collections::emptyList)
                         .stream()
@@ -39,5 +41,6 @@ public record ArticleWithCommentDto(
                 .modifiedBy(article.getModifiedBy())
                 .build();
     }
+
 
 }
