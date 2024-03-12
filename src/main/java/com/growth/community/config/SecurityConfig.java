@@ -31,32 +31,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(
-                            HttpMethod.GET,
-                            "/articles/**",
-                            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-                    ).permitAll()
-                    .requestMatchers(
-                            HttpMethod.POST,
-                            "/auth/**"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-            );
-
-        http
-            .formLogin(login -> login.successHandler(new CustomLoginSuccessHandler()))
-            .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessHandler((request, response, authentication) ->
-                            response.setStatus(HttpServletResponse.SC_OK)
-                    ).invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "USERINFO")
-            );
-
-        http
-                .sessionManagement(session -> session.invalidSessionUrl("/logout") //세션이 유효하지 않을 시 /logout으로 이동해서 쿠키 삭제
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(HttpMethod.GET, "/articles/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                ).formLogin(login -> login.successHandler(new CustomLoginSuccessHandler()))
+                .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessHandler((request, response, authentication) ->
+                                response.setStatus(HttpServletResponse.SC_OK)
+                        ).invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "USERINFO")
+                ).sessionManagement(session -> session.invalidSessionUrl("/logout") //세션이 유효하지 않을 시 /logout으로 이동해서 쿠키 삭제
                         .maximumSessions(1)    //동시 접속 1명까지 허용
                         .maxSessionsPreventsLogin(false)    //신규 로그인 시 기존 사용자 세션 종료
                         .expiredUrl("http://localhost:3000")    //세션 만료 시 해당 페이지로 이동
@@ -80,7 +67,6 @@ public class SecurityConfig {
 
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
         providerManager.setEraseCredentialsAfterAuthentication(false);
-
         return providerManager;
     }
 
